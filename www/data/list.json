@@ -1,0 +1,12 @@
+[
+  {
+    "list_id": 1,
+    "name": "First list",
+    "description": "This is awesome."
+  },
+  {
+    "list_id": 2,
+    "name": "Second list",
+    "description": "This is also okay."
+  }
+]
