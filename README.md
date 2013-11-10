@@ -1,4 +1,0 @@
-shoppings-lists
-===============
-
-Shoppings Lists

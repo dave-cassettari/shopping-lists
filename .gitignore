@@ -1,5 +1,5 @@
-.cordova
 .idea
-.npmignore
-.bowerrc
-dist/
+mobile/.npmignore
+mobile/.bowerrc
+mobile/.cordova
+mobile/dist/
