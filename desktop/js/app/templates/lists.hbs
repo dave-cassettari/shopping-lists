@@ -1,11 +1,13 @@
+{{outlet}}
+
 <h2><span class='total'>{{listsCount}}</span> Lists</h2>
 
-{{#link-to 'lists.create' class='action-create'}}Create New List{{/link-to}}
+<p>{{#link-to 'lists.create' class='action-create'}}Create New List{{/link-to}}</p>
 
-<ul class='lists'>
+<ul class='items'>
     {{#each list in controller}}
 		<li>
-            {{#link-to 'list' list}}
+            {{#link-to 'list' list class='item-title'}}
                 {{list.name}}
             {{/link-to}}
 		</li>
@@ -13,7 +15,3 @@
 		<li>no list</li>
     {{/each}}
 </ul>
-
-<div class='list'>
-    {{outlet}}
-</div>

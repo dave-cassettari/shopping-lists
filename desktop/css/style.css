@@ -61,11 +61,13 @@ h1 {
   padding: 2.4em 1.75em 0.5em;
   font-weight: 600; }
 
-h2 {
-  padding: 0 0 1em;
+h2,
+h3 {
+  padding: 20px 20px 1.5em;
   font-size: 120%;
   font-weight: 600; }
-  h2 .total {
+  h2 .total,
+  h3 .total {
     margin-right: 0.1em;
     color: #ddd;
     font-size: 150%; }
@@ -95,31 +97,48 @@ h2 {
       text-decoration: none; }
 
 .content {
-  padding: 20px;
   border: 1px solid #ddd;
   background: white;
   box-shadow: 0 0 0.25em #ccc;
+  overflow: hidden;
   position: fixed;
   top: 15px;
   left: 200px;
   right: 15px;
   bottom: 15px; }
+  .content section {
+    width: 50%;
+    height: 100%;
+    background: white;
+    box-shadow: 0 0 0.5em #ccc;
+    float: right; }
+  .content p {
+    padding: 0 20px 1em; }
 
-.lists {
-  margin: 1em -20px;
+.items {
+  margin: 1em 0;
   border-top: 1px solid #ddd; }
-  .lists li {
-    border-bottom: 1px solid #ddd; }
-    .lists li a {
+  .items li {
+    border-bottom: 1px solid #ddd;
+    background: #f4f5f6; }
+    .items li.empty {
       padding: 1em 20px;
-      background: #f4f5f6;
+      color: #ccc; }
+    .items li .item-quantity {
+      padding: 1em 20px;
+      color: #999;
+      font-weight: 600;
+      display: block;
+      float: right; }
+    .items li .item-title {
+      padding: 1em 20px;
       color: #666;
       text-decoration: none;
       display: block;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow-x: hidden; }
-      .lists li a:hover {
+      .items li .item-title:hover {
         background-color: #eee;
         color: #000;
         text-decoration: none; }

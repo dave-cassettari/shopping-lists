@@ -45,9 +45,10 @@ h1
   font-weight: 600;
 }
 
-h2
+h2,
+h3
 {
-  padding: 0 0 1em;
+  padding: $content-padding $content-padding 1.5em;
 
   font-size: 120%;
   font-weight: 600;
@@ -87,9 +88,6 @@ h2
 
 	display: block;
 
-	//	position: relative;
-	//	left: 1px;
-
 	&:hover,
 	&.active
 	{
@@ -105,34 +103,68 @@ h2
 
 .content
 {
-  padding: $content-padding;
-
   border: 1px solid #ddd;
   background: $background-standard;
   box-shadow: 0 0 0.25em #ccc;
+
+  overflow: hidden;
 
   position: fixed;
   top: $content-margin;
   left: $sidebar-width;
   right: $content-margin;
   bottom: $content-margin;
+
+  section
+  {
+	width: 50%;
+	height: 100%;
+
+	background: $background-standard;
+	box-shadow: 0 0 0.5em #ccc;
+
+	float: right;
+  }
+
+  p
+  {
+	padding: 0 $content-padding 1em;
+  }
 }
 
-.lists
+.items
 {
-  margin: 1em (-$content-padding);
+  margin: 1em 0;
 
   border-top: 1px solid #ddd;
 
   li
   {
 	border-bottom: 1px solid #ddd;
+	background: $background-highlight;
 
-	a
+	&.empty
 	{
 	  padding: 1em $content-padding;
 
-	  background: $background-highlight;
+	  color: #ccc;
+	}
+
+	.item-quantity
+	{
+	  padding: 1em $content-padding;
+
+	  color: #999;
+	  font-weight: 600;
+
+	  display: block;
+
+	  float: right;
+	}
+
+	.item-title
+	{
+	  padding: 1em $content-padding;
 
 	  color: #666;
 	  text-decoration: none;

@@ -1,6 +1,10 @@
 App.ListsCreateController = Ember.ObjectController.extend({
     actions: {
-        save: function ()
+        cancel: function ()
+        {
+            this.transitionToRoute('lists');
+        },
+        save  : function ()
         {
             var list = this.store.createRecord('list', this.get('model'));
 

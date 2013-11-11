@@ -1,9 +1,6 @@
-App.ModalView = Em.View.extend({
-    cancelRoute : 'index',
-    layoutName: 'layouts/modal',
-    tagName   : 'div',
-    classNames: ['modal'],
-    //classNameBindings: ['controller.modalVisible:shown:hidden'],
+App.ModalView = Em.View.extend(Ember.TargetActionSupport, {
+    cancelAction: 'cancel',
+    layoutName  : 'layouts/modal',
 
     actions: {
         hideModal: function ()
@@ -16,7 +13,12 @@ App.ModalView = Em.View.extend({
     {
         if ($(event.toElement).hasClass('modal-wrapper'))
         {
-            this.get('controller').transitionToRoute(this.get('cancelRoute'));
+            this.triggerAction({
+                action: this.get('cancelAction'),
+                target: this.get('controller')
+            });
+
+            return;
         }
     }
 });
