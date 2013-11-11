@@ -1,5 +1,6 @@
-<span class='number'>{{listsCount}}</span>
-<span class='total'>Lists</span>
+<h2><span class='total'>{{listsCount}}</span> Lists</h2>
+
+{{#link-to 'lists.create' class='action-create'}}Create New List{{/link-to}}
 
 <ul class='lists'>
     {{#each list in controller}}

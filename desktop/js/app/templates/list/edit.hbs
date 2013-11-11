@@ -1,12 +1,11 @@
-{{#link-to 'list' class='action-cancel'}}
-	Cancel
-{{/link-to}}
+{{#view App.ModalView cancelRoute='list.index'}}
+	<form class='edit'>
+		<label>
+			<span class='title'>Name</span>
+            {{input value=name}}
+		</label>
 
-<form class='edit'>
-	<label>
-		<span class='title'>Name</span>
-        {{input value=data.name}}
-	</label>
-
-	<button {{action 'save'}}>Save</button>
-</form>
+		<button {{action 'cancel'}}>Cancel</button>
+		<button {{action 'save'}}>Save</button>
+	</form>
+{{/view}}

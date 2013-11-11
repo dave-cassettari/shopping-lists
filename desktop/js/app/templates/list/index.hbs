@@ -1,0 +1,28 @@
+<h1>{{name}}</h1>
+
+{{#link-to 'list.edit' class='action-edit'}}
+	Edit
+{{/link-to}}
+
+{{#if confirm}}
+	<button {{action 'remove'}}>Confirm</button>
+	<button {{action 'cancel'}}>Cancel</button>
+{{else}}
+	<button {{action 'remove'}}>Delete</button>
+{{/if}}
+
+
+<ul class='items'>
+    {{#each item in items}}
+		<li>
+			<span class='items-title'>{{item.name}}</span>
+			<span class='items-quantity'>{{item.amount}}</span>
+		</li>
+    {{else}}
+		<li class='empty'>
+			No Items
+		</li>
+    {{/each}}
+</ul>
+
+{{outlet}}

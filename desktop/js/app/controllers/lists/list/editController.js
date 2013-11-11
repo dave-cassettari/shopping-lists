@@ -1,7 +1,12 @@
 App.ListEditController = Ember.ObjectController.extend({
     data   : null,
     actions: {
-        save: function ()
+        cancel: function ()
+        {
+            console.log(this.get('model'));
+            this.transitionToRoute('list', this.get('model'));
+        },
+        save  : function ()
         {
             var data = this.get('data'),
                 model = this.get('model');

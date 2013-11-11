@@ -1,6 +1,6 @@
 App.List = DS.Model.extend(Ember.Copyable, {
     name : DS.attr(),
-    items: DS.attr()
+    items: DS.hasMany('item', { async: true })
 });
 
 App.List.FIXTURES = [
@@ -9,7 +9,7 @@ App.List.FIXTURES = [
         name      : 'Sausage and Mash',
         created_on: '2013-11-11 12:10:00',
         created_by: 1,
-        items     : []
+        items     : [1, 2, 3]
     },
     {
         id        : 2,

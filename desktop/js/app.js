@@ -1,10 +1,36 @@
 'use strict';
 
 window.App = Ember.Application.create();
+App.ListsCreateController = Ember.ObjectController.extend({
+    actions: {
+        save: function ()
+        {
+            var list = this.store.createRecord('list', this.get('model'));
+
+//            list.set('created_on', new Date());
+            list.save();
+
+            this.transitionToRoute('list', list);
+        }
+    }
+});
+App.ListsController = Ember.ArrayController.extend({
+    sortProperties: ['created_on', 'name'],
+    sortAscending : false,
+    listsCount    : function ()
+    {
+        return this.get('model.length');
+    }.property('@each')
+});
 App.ListEditController = Ember.ObjectController.extend({
     data   : null,
     actions: {
-        save: function ()
+        cancel: function ()
+        {
+            console.log(this.get('model'));
+            this.transitionToRoute('list', this.get('model'));
+        },
+        save  : function ()
         {
             var data = this.get('data'),
                 model = this.get('model');
@@ -24,6 +50,10 @@ App.ListEditController = Ember.ObjectController.extend({
 App.ListController = Ember.ObjectController.extend({
     confirm: false,
     actions: {
+        cancel: function ()
+        {
+            this.set('confirm', false)
+        },
         remove: function ()
         {
             if (!this.get('confirm'))
@@ -41,17 +71,53 @@ App.ListController = Ember.ObjectController.extend({
         }
     }
 });
-App.ListsController = Ember.ArrayController.extend({
-    sortProperties: ['created_on', 'name'],
-    sortAscending : false,
-    listsCount    : function ()
+App.Item = DS.Model.extend(Ember.Copyable, {
+    name    : DS.attr(),
+    quantity: DS.attr(),
+    list    : DS.belongsTo('list'),
+    unit    : DS.belongsTo('unit'),
+    amount  : function ()
     {
-        return this.get('model.length');
-    }.property('@each')
+        var unit = this.get('unit'),
+            quantity = this.get('quantity'),
+            canonical = unit.get('canonical');
+
+        console.log(this.get('list'));
+        console.log(unit);
+        console.log(unit.get('symbol'));
+        console.log(quantity);
+        console.log(canonical);
+
+        return quantity + this.get('unit.symbol');
+    }.property('quantity', 'unit')
 });
+
+App.Item.FIXTURES = [
+    {
+        id      : 1,
+        name    : 'Sausages',
+        list    : 1,
+        unit    : 2,
+        quantity: 0.1
+    },
+    {
+        id      : 2,
+        name    : 'Mash',
+        list    : 1,
+        unit    : 1,
+        quantity: 400
+    },
+    {
+        id      : 3,
+        name    : 'Gravy',
+        list    : 1,
+        unit    : 4,
+        quantity: 600
+    }
+];
 App.List = DS.Model.extend(Ember.Copyable, {
     name : DS.attr(),
-    items: DS.attr()
+    items: DS.hasMany('item', { async: true })
 });
 
 App.List.FIXTURES = [
@@ -60,7 +126,7 @@ App.List.FIXTURES = [
         name      : 'Sausage and Mash',
         created_on: '2013-11-11 12:10:00',
         created_by: 1,
-        items     : []
+        items     : [1, 2, 3]
     },
     {
         id        : 2,
@@ -68,6 +134,63 @@ App.List.FIXTURES = [
         created_on: '2013-11-11 11:45:00',
         created_by: 2,
         items     : []
+    }
+];
+App.Trip = DS.Model.extend(Ember.Copyable, {
+    name : DS.attr(),
+    lists: DS.attr()
+});
+
+App.Trip.FIXTURES = [];
+App.Unit = DS.Model.extend({
+    name      : DS.attr(),
+    group     : DS.attr(),
+    symbol    : DS.attr(),
+    multiplier: DS.attr(),
+    items     : DS.hasMany('unit', { async: true }),
+    canonical : DS.belongsTo('unit')
+});
+
+App.Unit.FIXTURES = [
+    {
+        id        : 1,
+        group     : 'Weight',
+        name      : 'Grams',
+        symbol    : 'g',
+        multiplier: 1,
+        canonical : 1
+    },
+    {
+        id        : 2,
+        group     : 'Weight',
+        name      : 'Kilograms',
+        symbol    : 'kg',
+        multiplier: 0.001,
+        canonical : 1
+    },
+    {
+        id        : 3,
+        group     : 'Weight',
+        name      : 'Milligrams',
+        symbol    : 'mg',
+        multiplier: 1000,
+        canonical : 1
+    },
+    {
+        id        : 4,
+        group     : 'Volume',
+        name      : 'Millilitres',
+        symbol    : 'ml',
+        multiplier: 1,
+        canonical : 4
+    },
+    {
+        id        : 4,
+        group     : 'Volume',
+        name      : 'Litres',
+        symbol    : 'l',
+        multiplier: 0.001,
+        canonical : 4
     }
 ];
 App.User = DS.Model.extend({
@@ -100,6 +223,15 @@ App.Router.map(function ()
         });
         this.route('create');
     });
+
+    this.resource('trips', function ()
+    {
+        this.resource('trip', { path: '/:trip_id' }, function ()
+        {
+            this.route('edit');
+        });
+        this.route('create');
+    });
 });
 App.IndexRoute = Ember.Route.extend({
     redirect: function ()
@@ -110,7 +242,8 @@ App.IndexRoute = Ember.Route.extend({
 App.ListsCreateRoute = Ember.Route.extend({
     model         : function ()
     {
-        return Em.Object.create({});
+//        return Ember.Object.create();
+        return this.store.find('list', 1);
     },
     renderTemplate: function ()
     {
@@ -144,4 +277,32 @@ App.ListRoute = Ember.Route.extend({
         return this.store.find('list', params.list_id);
     }
 });
+App.TripsRoute = Ember.Route.extend({
+    model: function ()
+    {
+        return this.store.find('trip');
+    }
+});
 App.ApplicationAdapter = DS.FixtureAdapter;
+App.ModalView = Em.View.extend({
+    cancelRoute : 'index',
+    layoutName: 'layouts/modal',
+    tagName   : 'div',
+    classNames: ['modal'],
+    //classNameBindings: ['controller.modalVisible:shown:hidden'],
+
+    actions: {
+        hideModal: function ()
+        {
+            this.get('controller').set('modalVisible', false);
+        }
+    },
+
+    click: function (event)
+    {
+        if ($(event.toElement).hasClass('modal-wrapper'))
+        {
+            this.get('controller').transitionToRoute(this.get('cancelRoute'));
+        }
+    }
+});

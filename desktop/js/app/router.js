@@ -8,4 +8,13 @@ App.Router.map(function ()
         });
         this.route('create');
     });
+
+    this.resource('trips', function ()
+    {
+        this.resource('trip', { path: '/:trip_id' }, function ()
+        {
+            this.route('edit');
+        });
+        this.route('create');
+    });
 });

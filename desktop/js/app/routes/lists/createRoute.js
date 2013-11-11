@@ -1,7 +1,8 @@
 App.ListsCreateRoute = Ember.Route.extend({
     model         : function ()
     {
-        return Em.Object.create({});
+//        return Ember.Object.create();
+        return this.store.find('list', 1);
     },
     renderTemplate: function ()
     {

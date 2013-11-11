@@ -3,6 +3,17 @@ module.exports = function (grunt)
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
+//        sass: {
+//            dist: {
+//                options: {
+//                    style: 'compressed'
+//                },
+//                files  : {
+//                    'css/style.css': 'css/style.scss'
+//                }
+//            }
+//        },
+
         emberTemplates: {
             compile: {
                 options: {
@@ -50,6 +61,10 @@ module.exports = function (grunt)
                 files: ['js/**/*.js', '!js/vendor/**/*.js', '!js/app.js', '!js/vendor.js', '!js/templates.js'],
                 tasks: ['concat']
             }
+//            sass          : {
+//                files: ['css/*.scss'],
+//                tasks: ['sass']
+//            }
         }
     });
 
