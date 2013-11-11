@@ -11,6 +11,8 @@ App.Item = DS.Model.extend(Ember.Copyable, {
             symbol = this.get('unit.canonical.symbol'),
             amount = quantity * multiplier;
 
+        console.log(quantity);
+
         return amount + symbol;
     }.property('quantity', 'unit.multiplier', 'unit.canonical', 'unit.canonical.symbol')
 });

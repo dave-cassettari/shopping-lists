@@ -12,8 +12,6 @@ App.ListsCreateController = Ember.ObjectController.extend({
         },
         save  : function ()
         {
-            console.log(this.get('model'));
-            console.log(this.get('data'));
             var list = this.store.createRecord('list', this.get('model'));
 
             list.save();
@@ -29,6 +27,40 @@ App.ListsController = Ember.ArrayController.extend({
     {
         return this.get('model.length');
     }.property('@each')
+});
+App.ListAddController = Ember.ObjectController.extend({
+    units  : null,
+    needs  : 'list',
+    list   : Ember.computed.alias('controllers.list.model'),
+    actions: {
+        cancel: function ()
+        {
+            this.transitionToRoute('list', this.get('list'));
+        },
+        save  : function ()
+        {
+            var self = this,
+                list = this.get('list'),
+                data = this.get('model');
+
+            data.set('list', list);
+
+            this.store.find('unit', this.get('model.unit_id')).then(function(unit)
+            {
+                data.set('unit', unit);
+
+                var item = self.store.createRecord('item', data);
+
+                item.save().then(function ()
+                {
+                    list.get('items').pushObject(item);
+                    list.save();
+
+                    self.transitionToRoute('list', list);
+                });
+            });
+        }
+    }
 });
 App.ListDeleteController = Ember.ObjectController.extend({
     actions: {
@@ -82,6 +114,46 @@ App.ListController = Ember.ObjectController.extend({
     actions: {
     }
 });
+App.ItemController = Ember.ObjectController.extend({
+    needs  : 'list',
+    list   : Ember.computed.alias('controllers.list.model'),
+    actions: {
+        cancel: function ()
+        {
+//            var name,
+//                base = this.get('base'),
+//                model = this.get('model');
+//
+//            console.log(this.get('model.name'));
+//
+//            for (name in base)
+//            {
+//                if (!base.hasOwnProperty(name))
+//                {
+//                    continue;
+//                }
+//
+//                model.set(name, base[name]);
+//            }
+
+            this.transitionToRoute('list', this.get('list'));
+        },
+        save  : function ()
+        {
+            var self = this;
+
+            this.store.find('unit', this.get('model.unit_id')).then(function(unit)
+            {
+                var model = self.get('model');
+
+                model.set('unit', unit);
+                model.save();
+
+                self.transitionToRoute('list', self.get('list'));
+            });
+        }
+    }
+});
 App.Item = DS.Model.extend(Ember.Copyable, {
     name    : DS.attr(),
     quantity: DS.attr(),
@@ -94,6 +166,8 @@ App.Item = DS.Model.extend(Ember.Copyable, {
             quantity = this.get('quantity'),
             symbol = this.get('unit.canonical.symbol'),
             amount = quantity * multiplier;
+
+        console.log(quantity);
 
         return amount + symbol;
     }.property('quantity', 'unit.multiplier', 'unit.canonical', 'unit.canonical.symbol')
@@ -154,54 +228,60 @@ App.Trip = DS.Model.extend(Ember.Copyable, {
 
 App.Trip.FIXTURES = [];
 App.Unit = DS.Model.extend({
-    name      : DS.attr(),
-    group     : DS.attr(),
-    symbol    : DS.attr(),
-    multiplier: DS.attr(),
-    items     : DS.hasMany('unit', { async: true }),
-    canonical : DS.belongsTo('unit')
+    name        : DS.attr(),
+    group       : DS.attr(),
+    symbol      : DS.attr(),
+    multiplier  : DS.attr(),
+    items       : DS.hasMany('item', { async: true }),
+    canonical   : DS.belongsTo('unit', { inverse: 'alternatives', async: true }),
+    alternatives: DS.hasMany('unit', { inverse: 'canonical', async: true })
 });
 
 App.Unit.FIXTURES = [
     {
-        id        : 1,
-        group     : 'Weight',
-        name      : 'Grams',
-        symbol    : 'g',
-        multiplier: 1,
-        canonical : 1
+        id          : 1,
+        group       : 'Weight',
+        name        : 'Grams',
+        symbol      : 'g',
+        multiplier  : 1,
+        canonical   : null,
+        alternatives: [2, 3]
     },
     {
-        id        : 2,
-        group     : 'Weight',
-        name      : 'Kilograms',
-        symbol    : 'kg',
-        multiplier: 1000,
-        canonical : 1
+        id          : 2,
+        group       : 'Weight',
+        name        : 'Kilograms',
+        symbol      : 'kg',
+        multiplier  : 1000,
+        canonical   : 1,
+        alternatives: []
     },
     {
-        id        : 3,
-        group     : 'Weight',
-        name      : 'Milligrams',
-        symbol    : 'mg',
-        multiplier: 0.001,
-        canonical : 1
+        id          : 3,
+        group       : 'Weight',
+        name        : 'Milligrams',
+        symbol      : 'mg',
+        multiplier  : 0.001,
+        canonical   : 1,
+        alternatives: []
     },
     {
-        id        : 4,
-        group     : 'Volume',
-        name      : 'Millilitres',
-        symbol    : 'ml',
-        multiplier: 1,
-        canonical : 4
+        id          : 4,
+        group       : 'Volume',
+        name        : 'Millilitres',
+        symbol      : 'ml',
+        multiplier  : 1,
+        canonical   : null,
+        alternatives: [5]
     },
     {
-        id        : 4,
-        group     : 'Volume',
-        name      : 'Litres',
-        symbol    : 'l',
-        multiplier: 1000,
-        canonical : 4
+        id          : 5,
+        group       : 'Volume',
+        name        : 'Litres',
+        symbol      : 'l',
+        multiplier  : 1000,
+        canonical   : 4,
+        alternatives: []
     }
 ];
 App.User = DS.Model.extend({
@@ -230,8 +310,15 @@ App.Router.map(function ()
     {
         this.resource('list', { path: '/:list_id' }, function ()
         {
+            this.route('add');
             this.route('edit');
             this.route('delete');
+
+            this.resource('item', { path: '/:item_id' }, function ()
+            {
+                this.route('edit');
+                this.route('delete');
+            });
         });
         this.route('create');
     });
@@ -268,7 +355,20 @@ App.ListsRoute = Ember.Route.extend({
     {
         var route = this;
 
-        return this.store.find('list').then(function(lists)
+//        for (var i = 0; i < App.Unit.FIXTURES.length; i++)
+//        {
+//            var data = App.Unit.FIXTURES[i],
+//                unit = this.store.createRecord('unit', data);
+//
+//            unit.save();
+//
+////            this.store.find('unit', data.id).then(function(found)
+////            {
+////                console.log(found);
+////            });
+//        }
+
+        return this.store.find('list').then(function (lists)
         {
             if (lists.get('length') == 0)
             {
@@ -277,6 +377,23 @@ App.ListsRoute = Ember.Route.extend({
 
             return lists;
         });
+    }
+});
+App.ListAddRoute = Ember.Route.extend({
+    model          : function ()
+    {
+        return Ember.Object.create();
+    },
+    renderTemplate : function ()
+    {
+        this.render('item', {
+            controller: 'listAdd'
+        });
+    },
+    setupController: function (controller, model)
+    {
+        controller.set('model', model);
+        controller.set('units', controller.store.findAll('unit'));
     }
 });
 App.ListDeleteRoute = Ember.Route.extend({
@@ -302,6 +419,22 @@ App.ListRoute = Ember.Route.extend({
         return this.store.find('list', params.list_id);
     }
 });
+App.ItemRoute = Ember.Route.extend({
+    model: function (params)
+    {
+        var list = this.modelFor('list');
+
+        return this.store.find('item', {
+            list_id: list.get('id'),
+            item_id: params.item_id
+        });
+    },
+    setupController: function (controller, model)
+    {
+        controller.set('model', model);
+        controller.set('units', controller.store.findAll('unit'));
+    }
+});
 App.TripsRoute = Ember.Route.extend({
     model: function ()
     {
@@ -309,7 +442,24 @@ App.TripsRoute = Ember.Route.extend({
     }
 });
 App.LSAdapter = DS.LSAdapter.extend({
-    namespace: 'lists'
+    namespace: 'app.key.1'
+});
+
+DS.JSONSerializer.reopen({
+    serializeHasMany: function (record, json, relationship)
+    {
+        var key = relationship.key;
+
+        var relationshipType = DS.RelationshipChange.determineRelationshipType(
+            record.constructor, relationship);
+
+        if (relationshipType === 'manyToNone'
+                || relationshipType === 'manyToMany'
+            || relationshipType === 'manyToOne')
+        {
+            json[key] = Ember.get(record, key).mapBy('id');
+        }
+    }
 });
 
 App.ApplicationAdapter = DS.LSAdapter;

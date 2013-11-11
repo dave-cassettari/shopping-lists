@@ -6,8 +6,6 @@ App.ListsCreateController = Ember.ObjectController.extend({
         },
         save  : function ()
         {
-            console.log(this.get('model'));
-            console.log(this.get('data'));
             var list = this.store.createRecord('list', this.get('model'));
 
             list.save();

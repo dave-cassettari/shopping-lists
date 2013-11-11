@@ -305,6 +305,8 @@ button
 	  overflow: hidden;
 
 	  position: relative;
+
+	  @include clear-fix();
 	}
 
 	.item-quantity
@@ -388,6 +390,12 @@ button
 	position: absolute;
 	left: 50%;
 	top: 50%;
+
+	p
+	{
+	  padding-left: 0;
+	  padding-right: 0;
+	}
   }
 }
 

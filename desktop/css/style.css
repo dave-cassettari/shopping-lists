@@ -208,7 +208,13 @@ button {
     .items li .list-wrapper {
       display: block;
       overflow: hidden;
-      position: relative; }
+      position: relative;
+      *zoom: 1; }
+      .items li .list-wrapper:before, .items li .list-wrapper:after {
+        content: ' ';
+        display: table; }
+      .items li .list-wrapper:after {
+        clear: both; }
     .items li .item-quantity {
       padding: 1em 20px;
       color: #999;
@@ -258,6 +264,9 @@ button {
     position: absolute;
     left: 50%;
     top: 50%; }
+    .modal-wrapper .modal p {
+      padding-left: 0;
+      padding-right: 0; }
 
 form label {
   display: block; }
