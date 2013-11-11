@@ -1,6 +1,9 @@
 'use strict';
 
 window.App = Ember.Application.create();
+Ember.TextField.reopen({
+    attributeBindings: ['autofocus']
+});
 App.ListsCreateController = Ember.ObjectController.extend({
     actions: {
         cancel: function ()
@@ -9,6 +12,8 @@ App.ListsCreateController = Ember.ObjectController.extend({
         },
         save  : function ()
         {
+            console.log(this.get('model'));
+            console.log(this.get('data'));
             var list = this.store.createRecord('list', this.get('model'));
 
             list.save();
@@ -31,7 +36,7 @@ App.ListDeleteController = Ember.ObjectController.extend({
         {
             this.transitionToRoute('list', this.get('model'));
         },
-        save  : function ()
+        delete: function ()
         {
             this.get('model').deleteRecord();
             this.get('model').save();
@@ -41,27 +46,31 @@ App.ListDeleteController = Ember.ObjectController.extend({
     }
 });
 App.ListEditController = Ember.ObjectController.extend({
-    data   : null,
+    base   : null,
     actions: {
         cancel: function ()
         {
-            this.transitionToRoute('list', this.get('model'));
-        },
-        save  : function ()
-        {
             var name,
-                data = this.get('data'),
+                base = this.get('base'),
                 model = this.get('model');
 
-            for (name in data)
+            console.log(this.get('model.name'));
+
+            for (name in base)
             {
-                if (!data.hasOwnProperty(name))
+                if (!base.hasOwnProperty(name))
                 {
                     continue;
                 }
 
-                model.set(name, data[name]);
+                model.set(name, base[name]);
             }
+
+            this.transitionToRoute('list', model);
+        },
+        save  : function ()
+        {
+            var model = this.get('model');
 
             model.save();
 
@@ -70,29 +79,9 @@ App.ListEditController = Ember.ObjectController.extend({
     }
 });
 App.ListController = Ember.ObjectController.extend({
-    actions   : {
-//        cancel: function ()
-//        {
-//            this.set('confirm', false)
-//        },
-//        delete: function ()
-//        {
-//            if (!this.get('confirm'))
-//            {
-//                this.set('confirm', true);
-//
-//                return;
-//            }
-//
-//            this.set('confirm', false);
-//            this.get('model').deleteRecord();
-//            this.get('model').save();
-//
-//            this.transitionToRoute('lists');
-//        }
+    actions: {
     }
 });
-Ember.Handlebars.helper('label-input', App.InputView);
 App.Item = DS.Model.extend(Ember.Copyable, {
     name    : DS.attr(),
     quantity: DS.attr(),
@@ -304,7 +293,7 @@ App.ListEditRoute = Ember.Route.extend({
     setupController: function (controller, model)
     {
         controller.set('model', model);
-        controller.set('data', model.get('data'));
+        controller.set('base', model.get('data'));
     }
 });
 App.ListRoute = Ember.Route.extend({

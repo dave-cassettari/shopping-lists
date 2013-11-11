@@ -6,6 +6,6 @@ App.ListEditRoute = Ember.Route.extend({
     setupController: function (controller, model)
     {
         controller.set('model', model);
-        controller.set('data', model.get('data'));
+        controller.set('base', model.get('data'));
     }
 });

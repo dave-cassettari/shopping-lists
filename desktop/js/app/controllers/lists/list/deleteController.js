@@ -4,7 +4,7 @@ App.ListDeleteController = Ember.ObjectController.extend({
         {
             this.transitionToRoute('list', this.get('model'));
         },
-        save  : function ()
+        delete: function ()
         {
             this.get('model').deleteRecord();
             this.get('model').save();
