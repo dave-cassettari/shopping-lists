@@ -1,0 +1,12 @@
+{{#link-to 'list' class='action-cancel'}}
+	Cancel
+{{/link-to}}
+
+<form class='edit'>
+	<label>
+		<span class='title'>Name</span>
+        {{input value=data.name}}
+	</label>
+
+	<button {{action 'save'}}>Save</button>
+</form>

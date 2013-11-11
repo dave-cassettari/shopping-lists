@@ -3,3 +3,4 @@ mobile/.npmignore
 mobile/.bowerrc
 mobile/.cordova
 mobile/dist/
+desktop/node_modules/

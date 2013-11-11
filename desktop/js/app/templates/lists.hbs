@@ -1,0 +1,18 @@
+<span class='number'>{{listsCount}}</span>
+<span class='total'>Lists</span>
+
+<ul class='lists'>
+    {{#each list in controller}}
+		<li>
+            {{#link-to 'list' list}}
+                {{list.name}}
+            {{/link-to}}
+		</li>
+    {{else}}
+		<li>no list</li>
+    {{/each}}
+</ul>
+
+<div class='list'>
+    {{outlet}}
+</div>
