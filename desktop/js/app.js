@@ -25,6 +25,21 @@ App.ListsController = Ember.ArrayController.extend({
         return this.get('model.length');
     }.property('@each')
 });
+App.ListDeleteController = Ember.ObjectController.extend({
+    actions: {
+        cancel: function ()
+        {
+            this.transitionToRoute('list', this.get('model'));
+        },
+        save  : function ()
+        {
+            this.get('model').deleteRecord();
+            this.get('model').save();
+
+            this.transitionToRoute('lists');
+        }
+    }
+});
 App.ListEditController = Ember.ObjectController.extend({
     data   : null,
     actions: {
@@ -34,43 +49,47 @@ App.ListEditController = Ember.ObjectController.extend({
         },
         save  : function ()
         {
-            var data = this.get('data'),
+            var name,
+                data = this.get('data'),
                 model = this.get('model');
 
-            console.log(data);
-            console.log(model.get('data'));
+            for (name in data)
+            {
+                if (!data.hasOwnProperty(name))
+                {
+                    continue;
+                }
 
-            model.set('data', data);
+                model.set(name, data[name]);
+            }
+
             model.save();
-
-            console.log(model.get('data'));
 
             this.transitionToRoute('list', model);
         }
     }
 });
 App.ListController = Ember.ObjectController.extend({
-    confirm   : false,
     actions   : {
-        cancel: function ()
-        {
-            this.set('confirm', false)
-        },
-        delete: function ()
-        {
-            if (!this.get('confirm'))
-            {
-                this.set('confirm', true);
-
-                return;
-            }
-
-            this.set('confirm', false);
-            this.get('model').deleteRecord();
-            this.get('model').save();
-
-            this.transitionToRoute('lists');
-        }
+//        cancel: function ()
+//        {
+//            this.set('confirm', false)
+//        },
+//        delete: function ()
+//        {
+//            if (!this.get('confirm'))
+//            {
+//                this.set('confirm', true);
+//
+//                return;
+//            }
+//
+//            this.set('confirm', false);
+//            this.get('model').deleteRecord();
+//            this.get('model').save();
+//
+//            this.transitionToRoute('lists');
+//        }
     }
 });
 Ember.Handlebars.helper('label-input', App.InputView);
@@ -223,6 +242,7 @@ App.Router.map(function ()
         this.resource('list', { path: '/:list_id' }, function ()
         {
             this.route('edit');
+            this.route('delete');
         });
         this.route('create');
     });
@@ -257,7 +277,23 @@ App.ListsCreateRoute = Ember.Route.extend({
 App.ListsRoute = Ember.Route.extend({
     model: function ()
     {
-        return this.store.find('list');
+        var route = this;
+
+        return this.store.find('list').then(function(lists)
+        {
+            if (lists.get('length') == 0)
+            {
+                route.transitionTo('lists.create');
+            }
+
+            return lists;
+        });
+    }
+});
+App.ListDeleteRoute = Ember.Route.extend({
+    model: function ()
+    {
+        return this.modelFor('list');
     }
 });
 App.ListEditRoute = Ember.Route.extend({
@@ -267,10 +303,8 @@ App.ListEditRoute = Ember.Route.extend({
     },
     setupController: function (controller, model)
     {
-        var data = Ember.Object.create(model.get('data'));
-
-        controller.set('data', data);
         controller.set('model', model);
+        controller.set('data', model.get('data'));
     }
 });
 App.ListRoute = Ember.Route.extend({
@@ -285,7 +319,12 @@ App.TripsRoute = Ember.Route.extend({
         return this.store.find('trip');
     }
 });
-App.ApplicationAdapter = DS.FixtureAdapter;
+App.LSAdapter = DS.LSAdapter.extend({
+    namespace: 'lists'
+});
+
+App.ApplicationAdapter = DS.LSAdapter;
+//App.ApplicationAdapter = DS.FixtureAdapter;
 App.InputView = Ember.View.extend({
     title     : null,
     layoutName: 'layouts/input'

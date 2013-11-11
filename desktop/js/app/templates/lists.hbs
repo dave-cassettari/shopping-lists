@@ -9,11 +9,18 @@
 <ul class='items'>
     {{#each list in controller}}
 		<li>
-            {{#link-to 'list' list class='item-title'}}
-                {{list.name}}
-            {{/link-to}}
+            <span class='list-wrapper'>
+                <span class='button-group'>
+                    {{#link-to 'list.edit' list class='action-edit'}}Edit{{/link-to}}
+                    {{#link-to 'list.delete' list class='action-delete'}}Delete{{/link-to}}
+				</span>
+
+                {{#link-to 'list' list class='item-title'}}
+                    {{list.name}}
+                {{/link-to}}
+            </span>
 		</li>
     {{else}}
-		<li>no list</li>
+		<li class='empty'>Add a new List to start</li>
     {{/each}}
 </ul>

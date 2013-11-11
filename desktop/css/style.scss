@@ -97,11 +97,23 @@ h3
   }
 }
 
+a
+{
+  color: #666;
+  text-decoration: none;
+
+  &:hover
+  {
+	color: #000;
+	text-decoration: none;
+  }
+}
+
 .button,
 button
 {
   margin: 1.25em 0 0;
-  padding: 0.5em 0.75em 0.5em 2.25em;
+  padding: 0.5em 0.75em;
 
   border: 1px solid #ddd;
   background: $background-highlight 0.75em center no-repeat;
@@ -131,31 +143,49 @@ button
   {
 	margin-left: 1em;
   }
+}
 
-  &.action-edit
-  {
-	background-image: url('/images/icon-16-edit.png');
-  }
+%action
+{
+  padding-left: 2.25em;
 
-  &.action-save
-  {
-	background-image: url('/images/icon-16-save.png');
-  }
+  background-position: 0.75em center;
+  background-repeat: no-repeat;
+}
 
-  &.action-create
-  {
-	background-image: url('/images/icon-16-create.png');
-  }
+.action-edit
+{
+  @extend %action;
 
-  &.action-delete
-  {
-	background-image: url('/images/icon-16-delete.png');
-  }
+  background-image: url('/images/icon-16-edit.png');
+}
 
-  &.action-cancel
-  {
-	background-image: url('/images/icon-16-cancel.png');
-  }
+.action-save
+{
+  @extend %action;
+
+  background-image: url('/images/icon-16-save.png');
+}
+
+.action-create
+{
+  @extend %action;
+
+  background-image: url('/images/icon-16-create.png');
+}
+
+.action-delete
+{
+  @extend %action;
+
+  background-image: url('/images/icon-16-delete.png');
+}
+
+.action-cancel
+{
+  @extend %action;
+
+  background-image: url('/images/icon-16-cancel.png');
 }
 
 .button-group
@@ -238,7 +268,11 @@ button
 	background: $background-standard;
 	box-shadow: 0 0 0.5em #ccc;
 
+	z-index: 2000;
+
 	float: right;
+
+	position: relative;
   }
 
   p
@@ -265,6 +299,14 @@ button
 	  color: #ccc;
 	}
 
+	.list-wrapper
+	{
+	  display: block;
+	  overflow: hidden;
+
+	  position: relative;
+	}
+
 	.item-quantity
 	{
 	  padding: 1em $content-padding;
@@ -286,15 +328,34 @@ button
 
 	  display: block;
 
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+
 	  @include ellipsis();
 	}
 
-	a.item-title:hover
+	a.item-title:hover,
+	.item-title.active
 	{
 	  background-color: #eee;
 
 	  color: #000;
 	  text-decoration: none;
+	}
+
+	.button-group
+	{
+	  padding-top: 1em;
+
+	  display: block;
+	  z-index: 1;
+
+	  position: relative;
+
+	  float: right;
 	}
   }
 }

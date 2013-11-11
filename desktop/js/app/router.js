@@ -5,6 +5,7 @@ App.Router.map(function ()
         this.resource('list', { path: '/:list_id' }, function ()
         {
             this.route('edit');
+            this.route('delete');
         });
         this.route('create');
     });

@@ -83,10 +83,17 @@ h3 {
     color: #ddd;
     font-size: 150%; }
 
+a {
+  color: #666;
+  text-decoration: none; }
+  a:hover {
+    color: #000;
+    text-decoration: none; }
+
 .button,
 button {
   margin: 1.25em 0 0;
-  padding: 0.5em 0.75em 0.5em 2.25em;
+  padding: 0.5em 0.75em;
   border: 1px solid #ddd;
   background: #f4f5f6 0.75em center no-repeat;
   color: #666;
@@ -108,21 +115,26 @@ button {
   .button.right,
   button.right {
     margin-left: 1em; }
-  .button.action-edit,
-  button.action-edit {
-    background-image: url("/images/icon-16-edit.png"); }
-  .button.action-save,
-  button.action-save {
-    background-image: url("/images/icon-16-save.png"); }
-  .button.action-create,
-  button.action-create {
-    background-image: url("/images/icon-16-create.png"); }
-  .button.action-delete,
-  button.action-delete {
-    background-image: url("/images/icon-16-delete.png"); }
-  .button.action-cancel,
-  button.action-cancel {
-    background-image: url("/images/icon-16-cancel.png"); }
+
+.action-edit, .action-save, .action-create, .action-delete, .action-cancel {
+  padding-left: 2.25em;
+  background-position: 0.75em center;
+  background-repeat: no-repeat; }
+
+.action-edit {
+  background-image: url("/images/icon-16-edit.png"); }
+
+.action-save {
+  background-image: url("/images/icon-16-save.png"); }
+
+.action-create {
+  background-image: url("/images/icon-16-create.png"); }
+
+.action-delete {
+  background-image: url("/images/icon-16-delete.png"); }
+
+.action-cancel {
+  background-image: url("/images/icon-16-cancel.png"); }
 
 .button-group {
   padding: 0 1em 1em; }
@@ -178,7 +190,9 @@ button {
     height: 100%;
     background: white;
     box-shadow: 0 0 0.5em #ccc;
-    float: right; }
+    z-index: 2000;
+    float: right;
+    position: relative; }
   .content p {
     padding: 0 20px 1em; }
 
@@ -191,6 +205,10 @@ button {
     .items li.empty {
       padding: 1em 20px;
       color: #ccc; }
+    .items li .list-wrapper {
+      display: block;
+      overflow: hidden;
+      position: relative; }
     .items li .item-quantity {
       padding: 1em 20px;
       color: #999;
@@ -202,13 +220,25 @@ button {
       color: #666;
       text-decoration: none;
       display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow-x: hidden; }
-    .items li a.item-title:hover {
+    .items li a.item-title:hover,
+    .items li .item-title.active {
       background-color: #eee;
       color: #000;
       text-decoration: none; }
+    .items li .button-group {
+      padding-top: 1em;
+      display: block;
+      z-index: 1;
+      position: relative;
+      float: right; }
 
 .modal-wrapper {
   background: rgba(0, 0, 0, 0.25);

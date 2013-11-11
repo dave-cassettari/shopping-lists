@@ -32,8 +32,8 @@ module.exports = function (grunt)
                     'js/vendor/handlebars-1.0.0.js',
                     'js/vendor/ember-1.1.2.js',
                     'js/vendor/ember-data-1.0.0.js',
+                    'js/vendor/ember-localadapter.js',
                     'js/vendor/moment.js',
-//                    'js/vendor/localstorage_adapter.js',
 //                    'js/vendor/createUsersInLocalStorage.js',
                 ],
                 dest: 'js/vendor.js'

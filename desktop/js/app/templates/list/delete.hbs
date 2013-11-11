@@ -1,8 +1,6 @@
 {{#view App.ModalView cancelAction='cancel'}}
 	<form class='edit'>
-        {{#view App.InputView title='Name'}}
-            {{input value=data.name}}
-        {{/view}}
+        <p class='message-warning'>Are you sure you want to delete {{name}}?</p>
 
 		<button class='action-cancel left' {{action 'cancel'}}>Cancel</button>
 		<button class='action-save right' {{action 'save'}}>Save</button>
