@@ -8,7 +8,6 @@ App.ListsCreateController = Ember.ObjectController.extend({
         {
             var list = this.store.createRecord('list', this.get('model'));
 
-//            list.set('created_on', new Date());
             list.save();
 
             this.transitionToRoute('list', list);

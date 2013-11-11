@@ -172,14 +172,14 @@ h3
 	  display: block;
 
 	  @include ellipsis();
+	}
 
-	  &:hover
-	  {
-		background-color: #eee;
+	a.item-title:hover
+	{
+	  background-color: #eee;
 
-		color: #000;
-		text-decoration: none;
-	  }
+	  color: #000;
+	  text-decoration: none;
 	}
   }
 }

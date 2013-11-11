@@ -21,7 +21,7 @@ App.Unit.FIXTURES = [
         group     : 'Weight',
         name      : 'Kilograms',
         symbol    : 'kg',
-        multiplier: 0.001,
+        multiplier: 1000,
         canonical : 1
     },
     {
@@ -29,7 +29,7 @@ App.Unit.FIXTURES = [
         group     : 'Weight',
         name      : 'Milligrams',
         symbol    : 'mg',
-        multiplier: 1000,
+        multiplier: 0.001,
         canonical : 1
     },
     {
@@ -45,7 +45,7 @@ App.Unit.FIXTURES = [
         group     : 'Volume',
         name      : 'Litres',
         symbol    : 'l',
-        multiplier: 0.001,
+        multiplier: 1000,
         canonical : 4
     }
 ];

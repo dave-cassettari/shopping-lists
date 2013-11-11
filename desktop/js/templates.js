@@ -109,7 +109,11 @@ function program9(depth0,data) {
   data.buffer.push("\r\n			<li class='empty'>\r\n				No Items\r\n			</li>\r\n        ");
   }
 
-  data.buffer.push("<section>\r\n	<h3>");
+  data.buffer.push("<section>\r\n	<h3><span class='total'>");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "itemsCount", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));

@@ -1,6 +1,10 @@
 App.List = DS.Model.extend(Ember.Copyable, {
-    name : DS.attr(),
-    items: DS.hasMany('item', { async: true })
+    name      : DS.attr(),
+    items     : DS.hasMany('item', { async: true }),
+    itemsCount: function ()
+    {
+        return this.get('items.length');
+    }.property('items.@each')
 });
 
 App.List.FIXTURES = [

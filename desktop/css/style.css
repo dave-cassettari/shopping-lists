@@ -138,10 +138,10 @@ h3 {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow-x: hidden; }
-      .items li .item-title:hover {
-        background-color: #eee;
-        color: #000;
-        text-decoration: none; }
+    .items li a.item-title:hover {
+      background-color: #eee;
+      color: #000;
+      text-decoration: none; }
 
 .modal-wrapper {
   background: rgba(0, 0, 0, 0.25);

@@ -11,7 +11,6 @@ App.ListsCreateController = Ember.ObjectController.extend({
         {
             var list = this.store.createRecord('list', this.get('model'));
 
-//            list.set('created_on', new Date());
             list.save();
 
             this.transitionToRoute('list', list);
@@ -51,8 +50,8 @@ App.ListEditController = Ember.ObjectController.extend({
     }
 });
 App.ListController = Ember.ObjectController.extend({
-    confirm: false,
-    actions: {
+    confirm   : false,
+    actions   : {
         cancel: function ()
         {
             this.set('confirm', false)
@@ -81,18 +80,14 @@ App.Item = DS.Model.extend(Ember.Copyable, {
     unit    : DS.belongsTo('unit'),
     amount  : function ()
     {
-        var unit = this.get('unit'),
+        var multiplier = this.get('unit.multiplier'),
+            canonical = this.get('unit.canonical'),
             quantity = this.get('quantity'),
-            canonical = unit.get('canonical');
+            symbol = this.get('unit.canonical.symbol'),
+            amount = quantity * multiplier;
 
-        console.log(this.get('list'));
-        console.log(unit);
-        console.log(unit.get('symbol'));
-        console.log(quantity);
-        console.log(canonical);
-
-        return quantity + this.get('unit.symbol');
-    }.property('quantity', 'unit')
+        return amount + symbol;
+    }.property('quantity', 'unit.multiplier', 'unit.canonical', 'unit.canonical.symbol')
 });
 
 App.Item.FIXTURES = [
@@ -119,8 +114,12 @@ App.Item.FIXTURES = [
     }
 ];
 App.List = DS.Model.extend(Ember.Copyable, {
-    name : DS.attr(),
-    items: DS.hasMany('item', { async: true })
+    name      : DS.attr(),
+    items     : DS.hasMany('item', { async: true }),
+    itemsCount: function ()
+    {
+        return this.get('items.length');
+    }.property('items.@each')
 });
 
 App.List.FIXTURES = [
@@ -168,7 +167,7 @@ App.Unit.FIXTURES = [
         group     : 'Weight',
         name      : 'Kilograms',
         symbol    : 'kg',
-        multiplier: 0.001,
+        multiplier: 1000,
         canonical : 1
     },
     {
@@ -176,7 +175,7 @@ App.Unit.FIXTURES = [
         group     : 'Weight',
         name      : 'Milligrams',
         symbol    : 'mg',
-        multiplier: 1000,
+        multiplier: 0.001,
         canonical : 1
     },
     {
@@ -192,7 +191,7 @@ App.Unit.FIXTURES = [
         group     : 'Volume',
         name      : 'Litres',
         symbol    : 'l',
-        multiplier: 0.001,
+        multiplier: 1000,
         canonical : 4
     }
 ];
@@ -245,8 +244,7 @@ App.IndexRoute = Ember.Route.extend({
 App.ListsCreateRoute = Ember.Route.extend({
     model         : function ()
     {
-//        return Ember.Object.create();
-        return this.store.find('list', 1);
+        return Ember.Object.create();
     },
     renderTemplate: function ()
     {
