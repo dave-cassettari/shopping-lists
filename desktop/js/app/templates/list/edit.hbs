@@ -1,11 +1,10 @@
 {{#view App.ModalView cancelAction='cancel'}}
 	<form class='edit'>
-		<label>
-			<span class='title'>Name</span>
+        {{#view App.InputView title='Name'}}
             {{input value=name}}
-		</label>
+        {{/view}}
 
-		<button {{action 'cancel'}}>Cancel</button>
-		<button {{action 'save'}}>Save</button>
+		<button class='action-cancel left' {{action 'cancel'}}>Cancel</button>
+		<button class='action-save right' {{action 'save'}}>Save</button>
 	</form>
 {{/view}}

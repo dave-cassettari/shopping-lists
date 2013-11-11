@@ -1,0 +1,1 @@
+Ember.Handlebars.helper('label-input', App.InputView);

@@ -1,15 +1,14 @@
-App.ModalView = Em.View.extend(Ember.TargetActionSupport, {
-    cancelAction: 'cancel',
-    layoutName  : 'layouts/modal',
+App.ModalView = Ember.View.extend(Ember.TargetActionSupport, {
+    cancelAction    : 'cancel',
+    layoutName      : 'layouts/modal',
+    didInsertElement: function ()
+    {
+        var $modal = this.$().find('.modal');
 
-    actions: {
-        hideModal: function ()
-        {
-            this.get('controller').set('modalVisible', false);
-        }
+        $modal.css('height', 'auto');
+        $modal.css('margin-top', -$modal.height() / 2);
     },
-
-    click: function (event)
+    click           : function (event)
     {
         if ($(event.toElement).hasClass('modal-wrapper'))
         {
@@ -17,8 +16,6 @@ App.ModalView = Em.View.extend(Ember.TargetActionSupport, {
                 action: this.get('cancelAction'),
                 target: this.get('controller')
             });
-
-            return;
         }
     }
 });

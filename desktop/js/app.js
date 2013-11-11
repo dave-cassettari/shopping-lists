@@ -56,7 +56,7 @@ App.ListController = Ember.ObjectController.extend({
         {
             this.set('confirm', false)
         },
-        remove: function ()
+        delete: function ()
         {
             if (!this.get('confirm'))
             {
@@ -73,6 +73,7 @@ App.ListController = Ember.ObjectController.extend({
         }
     }
 });
+Ember.Handlebars.helper('label-input', App.InputView);
 App.Item = DS.Model.extend(Ember.Copyable, {
     name    : DS.attr(),
     quantity: DS.attr(),
@@ -285,18 +286,21 @@ App.TripsRoute = Ember.Route.extend({
     }
 });
 App.ApplicationAdapter = DS.FixtureAdapter;
-App.ModalView = Em.View.extend(Ember.TargetActionSupport, {
-    cancelAction: 'cancel',
-    layoutName  : 'layouts/modal',
+App.InputView = Ember.View.extend({
+    title     : null,
+    layoutName: 'layouts/input'
+});
+App.ModalView = Ember.View.extend(Ember.TargetActionSupport, {
+    cancelAction    : 'cancel',
+    layoutName      : 'layouts/modal',
+    didInsertElement: function ()
+    {
+        var $modal = this.$().find('.modal');
 
-    actions: {
-        hideModal: function ()
-        {
-            this.get('controller').set('modalVisible', false);
-        }
+        $modal.css('height', 'auto');
+        $modal.css('margin-top', -$modal.height() / 2);
     },
-
-    click: function (event)
+    click           : function (event)
     {
         if ($(event.toElement).hasClass('modal-wrapper'))
         {
@@ -304,8 +308,6 @@ App.ModalView = Em.View.extend(Ember.TargetActionSupport, {
                 action: this.get('cancelAction'),
                 target: this.get('controller')
             });
-
-            return;
         }
     }
 });

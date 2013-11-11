@@ -1,16 +1,16 @@
 <section>
-	<h3><span class='total'>{{itemsCount}}</span>{{name}}</h3>
-
-	<p>
-        {{#link-to 'list.edit' class='action-edit'}}Edit{{/link-to}}
+	<div class='button-group right'>
+        {{#link-to 'list.edit' class='button action-edit'}}Edit{{/link-to}}
 
         {{#if confirm}}
-			<button class='action-remove-cancel' {{action 'cancel'}}>Cancel</button>
-			<button class='action-remove-confirm' {{action 'remove'}}>Confirm</button>
+			<button class='action-cancel' {{action 'cancel'}}>Cancel</button>
+			<button class='action-delete' {{action 'delete'}}>Confirm</button>
         {{else}}
-			<button class='action-remove' {{action 'remove'}}>Delete</button>
+			<button class='action-delete' {{action 'delete'}}>Delete</button>
         {{/if}}
-	</p>
+	</div>
+
+	<h3><span class='total'>{{itemsCount}}</span>{{name}}</h3>
 
 	<ul class='items'>
         {{#each item in items}}

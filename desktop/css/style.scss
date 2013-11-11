@@ -1,10 +1,33 @@
 @import 'reset';
 
+@mixin clear-fix($clear: both) {
+  *zoom: 1;
+
+  &:before,
+  &:after
+  {
+	content: ' ';
+	display: table;
+  }
+
+  &:after
+  {
+	clear: $clear;
+  }
+}
+
 @mixin ellipsis() {
   text-overflow: ellipsis;
   white-space: nowrap;
 
   overflow-x: hidden;
+}
+
+@mixin fonts() {
+  font-size: 12pt;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-weight: 300;
+  line-height: 1.25;
 }
 
 $background-standard: #fff;
@@ -16,19 +39,29 @@ $content-padding: 20px;
 
 *
 {
+  outline: none;
+
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
 
+.left
+{
+  float: left;
+}
+
+.right
+{
+  float: right;
+}
+
 html
 {
   height: 100%;
 
-  font-size: 12pt;
-  font-family: 'Open Sans', Arial, sans-serif;
-  font-weight: 300;
+  @include fonts();
 }
 
 body
@@ -53,12 +86,94 @@ h3
   font-size: 120%;
   font-weight: 600;
 
+  @include ellipsis();
+
   .total
   {
 	margin-right: 0.1em;
 
 	color: #ddd;
 	font-size: 150%;
+  }
+}
+
+.button,
+button
+{
+  margin: 1.25em 0 0;
+  padding: 0.5em 0.75em 0.5em 2.25em;
+
+  border: 1px solid #ddd;
+  background: $background-highlight 0.75em center no-repeat;
+
+  color: #666;
+  text-decoration: none;
+
+  cursor: pointer;
+  display: block;
+
+  @include fonts();
+
+  &:hover
+  {
+	background-color: #eee;
+
+	color: #000;
+	text-decoration: none;
+  }
+
+  &.left
+  {
+	margin-right: 1em;
+  }
+
+  &.right
+  {
+	margin-left: 1em;
+  }
+
+  &.action-edit
+  {
+	background-image: url('/images/icon-16-edit.png');
+  }
+
+  &.action-save
+  {
+	background-image: url('/images/icon-16-save.png');
+  }
+
+  &.action-create
+  {
+	background-image: url('/images/icon-16-create.png');
+  }
+
+  &.action-delete
+  {
+	background-image: url('/images/icon-16-delete.png');
+  }
+
+  &.action-cancel
+  {
+	background-image: url('/images/icon-16-cancel.png');
+  }
+}
+
+.button-group
+{
+  padding: 0 1em 1em;
+
+  &.left,
+  &.right
+  {
+	@include clear-fix();
+
+	.button,
+	button
+	{
+	  margin-left: 1em;
+
+	  float: left;
+	}
   }
 }
 
@@ -210,5 +325,58 @@ h3
 	position: absolute;
 	left: 50%;
 	top: 50%;
+  }
+}
+
+form
+{
+  label
+  {
+	display: block;
+
+	.title
+	{
+	  width: 7em;
+	  padding: 0.8em 0.5em 0;
+
+	  cursor: pointer;
+	  display: block;
+
+	  float: left;
+	}
+
+	.input-container
+	{
+	  padding: 0.25em;
+
+	  display: block;
+	  overflow: hidden;
+	}
+
+	input,
+	select,
+	textarea
+	{
+	  width: 100%;
+	  padding: 0.25em;
+
+	  border: 1px solid #ddd;
+	  background: #fff;
+
+	  @include fonts();
+
+	  &:hover,
+	  &:active,
+	  &:focus
+	  {
+		border-color: #bbb;
+	  }
+
+	  &:active,
+	  &:focus
+	  {
+		box-shadow: 0 0 0.25em #ccc;
+	  }
+	}
   }
 }

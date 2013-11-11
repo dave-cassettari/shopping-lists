@@ -42,16 +42,24 @@ table {
   border-spacing: 0; }
 
 * {
+  outline: none;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box; }
 
+.left {
+  float: left; }
+
+.right {
+  float: right; }
+
 html {
   height: 100%;
   font-size: 12pt;
   font-family: 'Open Sans', Arial, sans-serif;
-  font-weight: 300; }
+  font-weight: 300;
+  line-height: 1.25; }
 
 body {
   height: 100%;
@@ -65,12 +73,71 @@ h2,
 h3 {
   padding: 20px 20px 1.5em;
   font-size: 120%;
-  font-weight: 600; }
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden; }
   h2 .total,
   h3 .total {
     margin-right: 0.1em;
     color: #ddd;
     font-size: 150%; }
+
+.button,
+button {
+  margin: 1.25em 0 0;
+  padding: 0.5em 0.75em 0.5em 2.25em;
+  border: 1px solid #ddd;
+  background: #f4f5f6 0.75em center no-repeat;
+  color: #666;
+  text-decoration: none;
+  cursor: pointer;
+  display: block;
+  font-size: 12pt;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-weight: 300;
+  line-height: 1.25; }
+  .button:hover,
+  button:hover {
+    background-color: #eee;
+    color: #000;
+    text-decoration: none; }
+  .button.left,
+  button.left {
+    margin-right: 1em; }
+  .button.right,
+  button.right {
+    margin-left: 1em; }
+  .button.action-edit,
+  button.action-edit {
+    background-image: url("/images/icon-16-edit.png"); }
+  .button.action-save,
+  button.action-save {
+    background-image: url("/images/icon-16-save.png"); }
+  .button.action-create,
+  button.action-create {
+    background-image: url("/images/icon-16-create.png"); }
+  .button.action-delete,
+  button.action-delete {
+    background-image: url("/images/icon-16-delete.png"); }
+  .button.action-cancel,
+  button.action-cancel {
+    background-image: url("/images/icon-16-cancel.png"); }
+
+.button-group {
+  padding: 0 1em 1em; }
+  .button-group.left, .button-group.right {
+    *zoom: 1; }
+    .button-group.left:before, .button-group.left:after, .button-group.right:before, .button-group.right:after {
+      content: ' ';
+      display: table; }
+    .button-group.left:after, .button-group.right:after {
+      clear: both; }
+    .button-group.left .button,
+    .button-group.left button, .button-group.right .button,
+    .button-group.right button {
+      margin-left: 1em;
+      float: left; }
 
 .sidebar {
   width: 200px;
@@ -160,3 +227,41 @@ h3 {
     position: absolute;
     left: 50%;
     top: 50%; }
+
+form label {
+  display: block; }
+  form label .title {
+    width: 7em;
+    padding: 0.8em 0.5em 0;
+    cursor: pointer;
+    display: block;
+    float: left; }
+  form label .input-container {
+    padding: 0.25em;
+    display: block;
+    overflow: hidden; }
+  form label input,
+  form label select,
+  form label textarea {
+    width: 100%;
+    padding: 0.25em;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 12pt;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-weight: 300;
+    line-height: 1.25; }
+    form label input:hover, form label input:active, form label input:focus,
+    form label select:hover,
+    form label select:active,
+    form label select:focus,
+    form label textarea:hover,
+    form label textarea:active,
+    form label textarea:focus {
+      border-color: #bbb; }
+    form label input:active, form label input:focus,
+    form label select:active,
+    form label select:focus,
+    form label textarea:active,
+    form label textarea:focus {
+      box-shadow: 0 0 0.25em #ccc; }

@@ -5,7 +5,7 @@ App.ListController = Ember.ObjectController.extend({
         {
             this.set('confirm', false)
         },
-        remove: function ()
+        delete: function ()
         {
             if (!this.get('confirm'))
             {
