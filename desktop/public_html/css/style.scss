@@ -1,0 +1,454 @@
+@import 'reset';
+
+@mixin clear-fix($clear: both) {
+  *zoom: 1;
+
+  &:before,
+  &:after
+  {
+	content: ' ';
+	display: table;
+  }
+
+  &:after
+  {
+	clear: $clear;
+  }
+}
+
+@mixin ellipsis() {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  overflow-x: hidden;
+}
+
+@mixin fonts() {
+  font-size: 12pt;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-weight: 300;
+  line-height: 1.25;
+}
+
+$background-standard: #fff;
+$background-highlight: #f4f5f6;
+$background-navigation: #b2cce6;
+$sidebar-width: 200px;
+$content-margin: 15px;
+$content-padding: 20px;
+
+*
+{
+  outline: none;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.left
+{
+  float: left;
+}
+
+.right
+{
+  float: right;
+}
+
+html
+{
+  height: 100%;
+
+  @include fonts();
+}
+
+body
+{
+  height: 100%;
+
+  background: $background-highlight;
+}
+
+h1
+{
+  padding: 2.4em 1.75em 0.5em;
+
+  font-weight: 600;
+}
+
+h2,
+h3
+{
+  padding: $content-padding $content-padding 1.5em;
+
+  font-size: 120%;
+  font-weight: 600;
+
+  @include ellipsis();
+
+  .total
+  {
+	margin-right: 0.1em;
+
+	color: #ddd;
+	font-size: 150%;
+  }
+}
+
+a
+{
+  color: #666;
+  text-decoration: none;
+
+  &:hover
+  {
+	color: #000;
+	text-decoration: none;
+  }
+}
+
+.button,
+button
+{
+  margin: 1.25em 0 0;
+  padding: 0.5em 0.75em;
+
+  border: 1px solid #ddd;
+  background: $background-highlight 0.75em center no-repeat;
+
+  color: #666;
+  text-decoration: none;
+
+  cursor: pointer;
+  display: block;
+
+  @include fonts();
+
+  &:hover
+  {
+	background-color: #eee;
+
+	color: #000;
+	text-decoration: none;
+  }
+
+  &.left
+  {
+	margin-right: 1em;
+  }
+
+  &.right
+  {
+	margin-left: 1em;
+  }
+}
+
+%action
+{
+  padding-left: 2.25em;
+
+  background-position: 0.75em center;
+  background-repeat: no-repeat;
+}
+
+.action-edit
+{
+  @extend %action;
+
+  background-image: url('/images/icon-16-edit.png');
+}
+
+.action-save
+{
+  @extend %action;
+
+  background-image: url('/images/icon-16-save.png');
+}
+
+.action-create
+{
+  @extend %action;
+
+  background-image: url('/images/icon-16-create.png');
+}
+
+.action-delete
+{
+  @extend %action;
+
+  background-image: url('/images/icon-16-delete.png');
+}
+
+.action-cancel
+{
+  @extend %action;
+
+  background-image: url('/images/icon-16-cancel.png');
+}
+
+.button-group
+{
+  padding: 0 1em 1em;
+
+  &.left,
+  &.right
+  {
+	@include clear-fix();
+
+	.button,
+	button
+	{
+	  margin-left: 1em;
+
+	  float: left;
+	}
+  }
+}
+
+.sidebar
+{
+  width: $sidebar-width;
+  height: 100%;
+  padding: 0;
+
+  color: #333;
+  font-size: 120%;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  a
+  {
+	margin: 0.5em 0 0 1em;
+	padding: 0.75em;
+
+	border: 1px solid transparent;
+
+	color: #333;
+	text-decoration: none;
+
+	display: block;
+
+	&:hover,
+	&.active
+	{
+	  border-color: #ddd;
+	  border-right-color: $background-standard;
+	  background-color: $background-standard;
+
+	  color: #000;
+	  text-decoration: none;
+	}
+  }
+}
+
+.content
+{
+  border: 1px solid #ddd;
+  background: $background-standard;
+  box-shadow: 0 0 0.25em #ccc;
+
+  overflow: hidden;
+
+  position: fixed;
+  top: $content-margin;
+  left: $sidebar-width;
+  right: $content-margin;
+  bottom: $content-margin;
+
+  section
+  {
+	width: 50%;
+	height: 100%;
+
+	background: $background-standard;
+	box-shadow: 0 0 0.5em #ccc;
+
+	z-index: 2000;
+
+	float: right;
+
+	position: relative;
+  }
+
+  p
+  {
+	padding: 0 $content-padding 1em;
+  }
+}
+
+.items
+{
+  margin: 1em 0;
+
+  border-top: 1px solid #ddd;
+
+  li
+  {
+	border-bottom: 1px solid #ddd;
+	background: $background-highlight;
+
+	&.empty
+	{
+	  padding: 1em $content-padding;
+
+	  color: #ccc;
+	}
+
+	.list-wrapper
+	{
+	  display: block;
+	  overflow: hidden;
+
+	  position: relative;
+
+	  @include clear-fix();
+	}
+
+	.item-quantity
+	{
+	  padding: 1em $content-padding;
+
+	  color: #999;
+	  font-weight: 600;
+
+	  display: block;
+
+	  float: right;
+	}
+
+	.item-title
+	{
+	  padding: 1em $content-padding;
+
+	  color: #666;
+	  text-decoration: none;
+
+	  display: block;
+
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+
+	  @include ellipsis();
+	}
+
+	a.item-title:hover,
+	.item-title.active
+	{
+	  background-color: #eee;
+
+	  color: #000;
+	  text-decoration: none;
+	}
+
+	.button-group
+	{
+	  padding-top: 1em;
+	  padding-left: 0;
+
+	  display: block;
+	  z-index: 1;
+
+	  position: relative;
+
+	  float: right;
+	}
+  }
+}
+
+.modal-wrapper
+{
+  $modal-width: 30em;
+  $modal-height: 20em;
+
+  background: rgba(#000, 0.25);
+
+  z-index: 3000;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .modal
+  {
+	width: $modal-width;
+	height: $modal-height;
+	margin: (-$modal-height / 2) 0 0 (-$modal-width / 2);
+	padding: 1.5em;
+
+	background: $background-standard;
+	box-shadow: 0 0 0.5em #333;
+
+	position: absolute;
+	left: 50%;
+	top: 50%;
+
+	p
+	{
+	  padding-left: 0;
+	  padding-right: 0;
+	}
+  }
+}
+
+form
+{
+  label
+  {
+	display: block;
+
+	.title
+	{
+	  width: 7em;
+	  padding: 0.8em 0.5em 0;
+
+	  cursor: pointer;
+	  display: block;
+
+	  float: left;
+	}
+
+	.input-container
+	{
+	  padding: 0.25em;
+
+	  display: block;
+	  overflow: hidden;
+	}
+
+	input,
+	select,
+	textarea
+	{
+	  width: 100%;
+	  padding: 0.25em;
+
+	  border: 1px solid #ddd;
+	  background: #fff;
+
+	  @include fonts();
+
+	  &:hover,
+	  &:active,
+	  &:focus
+	  {
+		border-color: #bbb;
+	  }
+
+	  &:active,
+	  &:focus
+	  {
+		box-shadow: 0 0 0.25em #ccc;
+	  }
+	}
+  }
+}

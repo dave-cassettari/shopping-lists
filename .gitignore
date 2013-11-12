@@ -3,6 +3,6 @@ mobile/.npmignore
 mobile/.bowerrc
 mobile/.cordova
 mobile/dist/
-desktop/node_modules/
-api/framework/
-api/runtime/
+desktop/framework/
+desktop/runtime/
+desktop/public_html/node_modules/

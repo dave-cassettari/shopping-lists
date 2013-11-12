@@ -1,0 +1,31 @@
+<section>
+	<div class='button-group right'>
+        {{#link-to 'list.add' class='button action-create'}}Add Item{{/link-to}}
+	</div>
+
+	<h3><span class='total'>{{itemsCount}}</span> {{name}}</h3>
+
+	<ul class='items'>
+        {{#each item in items}}
+			<li>
+                <span class='list-wrapper'>
+                    <span class='button-group'>
+                        {{#link-to 'item' item class='action-edit'}}Edit{{/link-to}}
+                        {{#link-to 'item.delete' item class='action-delete'}}Delete{{/link-to}}
+                    </span>
+
+                    <span class='item-quantity'>{{item.unit}}</span>
+                    <span class='item-quantity'>{{item.quantity}}</span>
+                    <span class='item-quantity'>{{item.amount}}</span>
+                    <span class='item-title'>{{item.name}}</span>
+                </span>
+			</li>
+        {{else}}
+			<li class='empty'>
+				No Items
+			</li>
+        {{/each}}
+	</ul>
+
+    {{outlet}}
+</section>
