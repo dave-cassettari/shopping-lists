@@ -1,12 +1,12 @@
 App.ListsCreateController = Ember.ObjectController.extend({
     actions: {
-        cancel: function ()
+        cancel : function ()
         {
             this.get('model').deleteRecord();
 
             this.transitionToRoute('lists');
         },
-        save  : function ()
+        confirm: function ()
         {
             var self = this,
                 list = this.get('model');

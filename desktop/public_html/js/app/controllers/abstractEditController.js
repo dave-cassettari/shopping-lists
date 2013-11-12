@@ -18,7 +18,7 @@ App.AbstractEditController = Ember.ObjectController.extend({
         this.transitionToRoute(this.get('route'), params);
     },
     actions    : {
-        cancel: function ()
+        cancel : function ()
         {
             var name,
                 data = this.get('data'),
@@ -36,17 +36,13 @@ App.AbstractEditController = Ember.ObjectController.extend({
 
             this.goBack(item);
         },
-        save  : function ()
+        confirm: function ()
         {
             var self = this,
                 item = this.get('model');
 
-            console.log(item.get('unit.name'));
-
             item.save().then(function (updatedItem)
             {
-                console.log(updatedItem.get('unit.name'));
-
                 self.goBack(updatedItem);
             });
         }

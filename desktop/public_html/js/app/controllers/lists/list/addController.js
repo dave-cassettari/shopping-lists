@@ -2,13 +2,13 @@ App.ListAddController = Ember.ObjectController.extend({
     needs  : ['list', 'application'],
     list   : Ember.computed.alias('controllers.list.model'),
     actions: {
-        cancel: function ()
+        cancel : function ()
         {
             this.get('model').deleteRecord();
 
             this.transitionToRoute('list', this.get('list'));
         },
-        save  : function ()
+        confirm: function ()
         {
             var self = this,
                 list = this.get('list'),

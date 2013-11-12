@@ -1,4 +1,4 @@
-App.ItemController = App.AbstractEditController.extend({
+App.ItemIndexController = App.AbstractEditController.extend({
     needs      : ['list', 'application'],
     list       : Ember.computed.alias('controllers.list.model'),
     route      : 'list',

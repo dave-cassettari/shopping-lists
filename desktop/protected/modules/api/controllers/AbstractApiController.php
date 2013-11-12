@@ -31,7 +31,6 @@ abstract class AbstractApiController extends AbstractController
 				break;
 
 			case 'PUT':
-				sleep(2);
 				$params = $this->getRestParams($class);
 				$result = $this->getExistingObject($params);
 

@@ -5,7 +5,7 @@ App.ListAddRoute = Ember.Route.extend({
     },
     renderTemplate: function ()
     {
-        this.render('item', {
+        this.render('item/index', {
             controller: 'listAdd'
         });
     }
