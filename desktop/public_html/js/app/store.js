@@ -26,13 +26,34 @@ DS.Model.reopen({
     apiErrors: null
 });
 
+DS.Store.reopen({
+    isLoading: false,
+});
+
 DS.RESTAdapter.reopen({
     namespace   : 'api',
+//    ajax        : function (url, type, hash)
+//    {
+//        var promise = this._super(url, type, hash),
+//            complete = function ()
+//            {
+//                store.set('isLoading', false);
+//            };
+//
+//        promise.then(complete, complete);
+//
+//        return promise;
+//    },
     createRecord: function (store, type, record)
     {
         var promise = this._super(store, type, record);
 
-        promise.then(null, function (response)
+        store.set('isLoading', true);
+
+        promise.then(function()
+        {
+            store.set('isLoading', false);
+        }, function (response)
         {
             var json = response.responseJSON;
 
@@ -40,6 +61,8 @@ DS.RESTAdapter.reopen({
             {
                 record.set('apiErrors', json.apiErrors);
             }
+
+            store.set('isLoading', false);
         });
 
         return promise;

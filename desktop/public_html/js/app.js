@@ -1,5 +1,10 @@
 'use strict';
 
+var isLoading = function ()
+{
+    return this.get('store.isLoading');
+}.property('store.isLoading');
+
 window.App = Ember.Application.create();
 
 Ember.TextField.reopen({
@@ -7,6 +12,14 @@ Ember.TextField.reopen({
     {
         this.sendAction('focusOutAction', this.get('value'));
     }
+});
+
+Ember.ObjectController.reopen({
+    isLoading: isLoading
+});
+
+Ember.ArrayController.reopen({
+    isLoading: isLoading
 });
 Ember.TextField.reopen({
     attributeBindings: ['autofocus']
@@ -24,9 +37,7 @@ App.ListsCreateController = Ember.ObjectController.extend({
             var self = this,
                 list = this.get('model');
 
-            var promise = list.save();
-
-            promise.then(function (list)
+            list.save().then(function (list)
             {
                 self.transitionToRoute('list', list);
             });
@@ -48,18 +59,17 @@ App.ListAddController = Ember.ObjectController.extend({
     actions: {
         cancel: function ()
         {
+            this.get('model').deleteRecord();
+
             this.transitionToRoute('list', this.get('list'));
         },
         save  : function ()
         {
-            var item,
-                self = this,
+            var self = this,
                 list = this.get('list'),
-                data = this.get('model');
+                item = this.get('model');
 
-            data.set('list', list);
-
-            item = this.store.createRecord('item', data);
+            item.set('list', list);
 
             item.save().then(function (saved)
             {
@@ -359,19 +369,12 @@ App.ListsCreateRoute = Ember.Route.extend({
     model         : function ()
     {
         return this.get('store').createRecord('list');
-//        return Ember.Object.create();
     },
     renderTemplate: function ()
     {
         this.render('list.edit', {
             controller: 'listsCreate'
         });
-    },
-    actions       : {
-        error: function (reason)
-        {
-            alert(reason);
-        }
     }
 });
 App.ListsRoute = Ember.Route.extend({
@@ -421,7 +424,7 @@ App.ListsRoute = Ember.Route.extend({
 App.ListAddRoute = Ember.Route.extend({
     model          : function ()
     {
-        return Ember.Object.create();
+        return this.get('store').createRecord('item');
     },
     renderTemplate : function ()
     {
@@ -508,13 +511,34 @@ DS.Model.reopen({
     apiErrors: null
 });
 
+DS.Store.reopen({
+    isLoading: false,
+});
+
 DS.RESTAdapter.reopen({
     namespace   : 'api',
+//    ajax        : function (url, type, hash)
+//    {
+//        var promise = this._super(url, type, hash),
+//            complete = function ()
+//            {
+//                store.set('isLoading', false);
+//            };
+//
+//        promise.then(complete, complete);
+//
+//        return promise;
+//    },
     createRecord: function (store, type, record)
     {
         var promise = this._super(store, type, record);
 
-        promise.then(null, function (response)
+        store.set('isLoading', true);
+
+        promise.then(function()
+        {
+            store.set('isLoading', false);
+        }, function (response)
         {
             var json = response.responseJSON;
 
@@ -522,6 +546,8 @@ DS.RESTAdapter.reopen({
             {
                 record.set('apiErrors', json.apiErrors);
             }
+
+            store.set('isLoading', false);
         });
 
         return promise;
@@ -566,19 +592,20 @@ App.EditableView = Ember.View.extend({
 });
 App.InputView = Ember.View.extend({
     title     : null,
-    value     : null,
+    errorName : null,
     layoutName: 'views/layouts/input',
     error     : function ()
     {
         var error,
+            name = this.get('errorName'),
             errors = this.get('controller.model.apiErrors');
 
-        if (!errors || !errors.hasOwnProperty(this.value))
+        if (!errors || !errors.hasOwnProperty(name))
         {
             return null;
         }
 
-        error = errors[this.value];
+        error = errors[name];
 
         if (error.hasOwnProperty('length') && error.length > 0)
         {

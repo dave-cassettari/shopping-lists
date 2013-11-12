@@ -51,24 +51,27 @@ function program1(depth0,data) {
     'on': ("submit")
   },contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(">\r\n        ");
-  hashContexts = {'title': depth0};
-  hashTypes = {'title': "STRING"};
+  hashContexts = {'title': depth0,'errorName': depth0};
+  hashTypes = {'title': "STRING",'errorName': "STRING"};
   stack1 = helpers.view.call(depth0, "App.InputView", {hash:{
-    'title': ("Name")
+    'title': ("Name"),
+    'errorName': ("name")
   },inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\r\n\r\n        ");
-  hashContexts = {'title': depth0};
-  hashTypes = {'title': "STRING"};
+  hashContexts = {'title': depth0,'errorName': depth0};
+  hashTypes = {'title': "STRING",'errorName': "STRING"};
   stack1 = helpers.view.call(depth0, "App.InputView", {hash:{
-    'title': ("Quantity")
+    'title': ("Quantity"),
+    'errorName': ("quantity")
   },inverse:self.noop,fn:self.program(4, program4, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\r\n\r\n        ");
-  hashContexts = {'title': depth0};
-  hashTypes = {'title': "STRING"};
+  hashContexts = {'title': depth0,'errorName': depth0};
+  hashTypes = {'title': "STRING",'errorName': "STRING"};
   stack1 = helpers.view.call(depth0, "App.InputView", {hash:{
-    'title': ("Units")
+    'title': ("Units"),
+    'errorName': ("unit_id")
   },inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\r\n\r\n		<button class='action-cancel left' ");
@@ -276,7 +279,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 
 function program1(depth0,data) {
   
-  var buffer = '', stack1, hashContexts, hashTypes;
+  var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\r\n	<form class='edit' ");
   hashContexts = {'on': depth0};
   hashTypes = {'on': "STRING"};
@@ -284,18 +287,32 @@ function program1(depth0,data) {
     'on': ("submit")
   },contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(">\r\n        ");
-  hashContexts = {'title': depth0,'value': depth0};
-  hashTypes = {'title': "STRING",'value': "STRING"};
+  hashContexts = {'title': depth0,'errorName': depth0};
+  hashTypes = {'title': "STRING",'errorName': "STRING"};
   stack1 = helpers.view.call(depth0, "App.InputView", {hash:{
     'title': ("Name"),
-    'value': ("name")
+    'errorName': ("name")
   },inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
   data.buffer.push("\r\n\r\n		<button class='action-cancel left' ");
+  hashContexts = {'disabled': depth0};
+  hashTypes = {'disabled': "ID"};
+  options = {hash:{
+    'disabled': ("isLoading")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers['bind-attr'] || depth0['bind-attr']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "bind-attr", options))));
+  data.buffer.push(" ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "cancel", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push(" type='reset'>Cancel</button>\r\n		<button class='action-save right' ");
+  hashContexts = {'disabled': depth0};
+  hashTypes = {'disabled': "ID"};
+  options = {hash:{
+    'disabled': ("isLoading")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers['bind-attr'] || depth0['bind-attr']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "bind-attr", options))));
+  data.buffer.push(" ");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers.action.call(depth0, "save", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
@@ -306,11 +323,12 @@ function program2(depth0,data) {
   
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\r\n            ");
-  hashContexts = {'value': depth0,'autofocus': depth0};
-  hashTypes = {'value': "ID",'autofocus': "STRING"};
+  hashContexts = {'value': depth0,'autofocus': depth0,'disabled': depth0};
+  hashTypes = {'value': "ID",'autofocus': "STRING",'disabled': "ID"};
   options = {hash:{
     'value': ("name"),
-    'autofocus': ("autofocus")
+    'autofocus': ("autofocus"),
+    'disabled': ("isLoading")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.input || depth0.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
   data.buffer.push("\r\n        ");

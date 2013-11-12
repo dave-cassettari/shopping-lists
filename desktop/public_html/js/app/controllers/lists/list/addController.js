@@ -5,18 +5,17 @@ App.ListAddController = Ember.ObjectController.extend({
     actions: {
         cancel: function ()
         {
+            this.get('model').deleteRecord();
+
             this.transitionToRoute('list', this.get('list'));
         },
         save  : function ()
         {
-            var item,
-                self = this,
+            var self = this,
                 list = this.get('list'),
-                data = this.get('model');
+                item = this.get('model');
 
-            data.set('list', list);
-
-            item = this.store.createRecord('item', data);
+            item.set('list', list);
 
             item.save().then(function (saved)
             {

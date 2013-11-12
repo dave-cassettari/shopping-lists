@@ -482,3 +482,19 @@ form
 	}
   }
 }
+
+[disabled],
+[disabled]:hover,
+[disabled]:focus,
+[disabled]:active
+{
+  background-color: #ddd;
+
+  color: #666;
+}
+
+button[disabled],
+.button[disabled]
+{
+  background-image: url('/images/loading.gif');
+}

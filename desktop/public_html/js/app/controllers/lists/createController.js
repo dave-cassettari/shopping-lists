@@ -11,9 +11,7 @@ App.ListsCreateController = Ember.ObjectController.extend({
             var self = this,
                 list = this.get('model');
 
-            var promise = list.save();
-
-            promise.then(function (list)
+            list.save().then(function (list)
             {
                 self.transitionToRoute('list', list);
             });

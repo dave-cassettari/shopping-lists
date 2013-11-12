@@ -1,14 +1,14 @@
 {{#view App.ModalView cancelAction='cancel'}}
 	<form class='edit' {{action 'save' on='submit'}}>
-        {{#view App.InputView title='Name'}}
+        {{#view App.InputView title='Name' errorName='name'}}
             {{input value=name autofocus='autofocus'}}
         {{/view}}
 
-        {{#view App.InputView title='Quantity'}}
+        {{#view App.InputView title='Quantity' errorName='quantity'}}
             {{input value=quantity}}
         {{/view}}
 
-        {{#view App.InputView title='Units'}}
+        {{#view App.InputView title='Units' errorName='unit_id'}}
             {{view Ember.Select
             content=units
             optionValuePath='content.id'

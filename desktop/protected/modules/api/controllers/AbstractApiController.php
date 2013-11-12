@@ -54,6 +54,7 @@ abstract class AbstractApiController extends AbstractController
 				break;
 
 			case 'POST':
+				sleep(1);
 				$params = $this->getRestParams($class);
 				$result = $this->createAndSaveObject($params);
 
