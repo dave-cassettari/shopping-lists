@@ -2,19 +2,23 @@ App.Item = DS.Model.extend(Ember.Copyable, {
     name    : DS.attr(),
     quantity: DS.attr(),
     list    : DS.belongsTo('list', { async: true }),
-    unit    : DS.belongsTo('unit', { async: true }),
+    unit    : DS.belongsTo('unit', { async: false }),
     amount  : function ()
     {
         var multiplier = this.get('unit.multiplier'),
-            canonical = this.get('unit.canonical'),
+//            canonical = this.get('unit.canonical'),
             quantity = this.get('quantity'),
-            symbol = this.get('unit.canonical.symbol'),
-            amount = quantity * multiplier;
+            symbol = this.get('unit.symbol'),
+            amount = quantity;// * multiplier;
 
-        console.log(quantity);
+//        console.log(this.get('unit'));
+//        console.log(multiplier);
+////        console.log(canonical);
+//        console.log(quantity);
+//        console.log(amount);
 
         return amount + symbol;
-    }.property('quantity', 'unit.multiplier', 'unit.canonical', 'unit.canonical.symbol')
+    }.property('quantity', 'unit.multiplier', 'unit.symbol') //'unit.canonical', 'unit.canonical.symbol'
 });
 
 App.Item.FIXTURES = [

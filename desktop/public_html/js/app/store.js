@@ -30,55 +30,40 @@ DS.Store.reopen({
     isLoading: false,
 });
 
+var intercept = function (store, type, record)
+{
+    var promise = this._super(store, type, record);
+
+    store.set('isLoading', true);
+
+    promise.then(function (model)
+    {
+        store.set('isLoading', false);
+        record.set('apiErrors', null);
+    }, function (response)
+    {
+        var json = response.responseJSON;
+
+        store.set('isLoading', false);
+
+        if (json && json.hasOwnProperty('apiErrors'))
+        {
+            record.set('apiErrors', json.apiErrors);
+        }
+    });
+
+    return promise;
+};
+
 DS.RESTAdapter.reopen({
     namespace   : 'api',
     createRecord: function (store, type, record)
     {
-        var promise = this._super(store, type, record);
-
-        store.set('isLoading', true);
-
-        promise.then(function()
-        {
-            store.set('isLoading', false);
-            record.set('apiErrors', null);
-        }, function (response)
-        {
-            var json = response.responseJSON;
-
-            console.log(json);
-
-            if (json && json.hasOwnProperty('apiErrors'))
-            {
-                record.set('apiErrors', json.apiErrors);
-            }
-
-            store.set('isLoading', false);
-        });
-
-        return promise;
+        return intercept.call(this, store, type, record);
     },
     updateRecord: function (store, type, record)
     {
-        var promise = this._super(store, type, record);
-
-        promise.then(function()
-        {
-            store.set('isLoading', false);
-            record.set('apiErrors', null);
-        }, function (response)
-        {
-            var json = response.responseJSON;
-
-            console.log(response);
-
-            if (json && json.hasOwnProperty('apiErrors'))
-            {
-                record.set('apiErrors', json.apiErrors);
-            }
-        });
-
-        return promise;
+        return intercept.call(this, store, type, record);
     }
 });
 

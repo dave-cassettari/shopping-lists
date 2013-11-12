@@ -15,7 +15,7 @@ abstract class AbstractApiController extends AbstractController
 			case 'GET':
 				$params = $_GET;
 
-				if (empty($_GET))
+				if (!isset($params['id']))
 				{
 					$result = $this->getAllObjects($params);
 				}
@@ -31,6 +31,7 @@ abstract class AbstractApiController extends AbstractController
 				break;
 
 			case 'PUT':
+				sleep(2);
 				$params = $this->getRestParams($class);
 				$result = $this->getExistingObject($params);
 
@@ -39,11 +40,32 @@ abstract class AbstractApiController extends AbstractController
 					throw new CHttpException(404);
 				}
 
+				$relations = $result->relations();
+
 				foreach ($params as $name => $value)
 				{
 					if ($result->hasAttribute($name))
 					{
 						$result->setAttribute($name, $value);
+					}
+
+					foreach ($relations as $relation => $config)
+					{
+						if ($relation != $name)
+						{
+							continue;
+						}
+
+						$type = $config[0];
+
+						switch ($type)
+						{
+							case AbstractActiveRecord::BELONGS_TO:
+								$attribute = $relation . '_id';
+
+								$result->setAttribute($attribute, $value);
+								break;
+						}
 					}
 				}
 
@@ -54,7 +76,6 @@ abstract class AbstractApiController extends AbstractController
 				break;
 
 			case 'POST':
-				sleep(1);
 				$params = $this->getRestParams($class);
 				$result = $this->createAndSaveObject($params);
 
@@ -87,9 +108,7 @@ abstract class AbstractApiController extends AbstractController
 				http_response_code(422);
 
 				$result = array(
-//					$this->getClassName($result) => array(
 					'apiErrors' => $result->getErrors(),
-//					),
 				);
 			}
 			else
@@ -98,15 +117,6 @@ abstract class AbstractApiController extends AbstractController
 					$this->getClassName($result) => $result
 				);
 			}
-		}
-		else if (is_array($result))
-		{
-			$model  = $this->getModel();
-			$class  = $this->getClassName($model);
-			$plural = self::makePlural($class);
-			$result = array(
-				$plural => $result,
-			);
 		}
 
 		echo json_encode($result, JSON_PRETTY_PRINT);
@@ -132,19 +142,28 @@ abstract class AbstractApiController extends AbstractController
 	protected function getAllObjects(array $params)
 	{
 		$model    = $this->getModel();
+		$class    = $this->getClassName($model);
+		$plural   = self::makePlural($class);
 		$criteria = new CDbCriteria();
-
-		if (isset($params['limit']))
-		{
-			$criteria->limit = intval($params['limit']);
-		}
 
 		if (isset($params['offset']))
 		{
 			$criteria->offset = intval($params['offset']);
 		}
 
-		return $model->findAll($criteria);
+		$total = $model->count($criteria);
+
+		if (isset($params['limit']))
+		{
+			$criteria->limit = intval($params['limit']);
+		}
+
+		return array(
+			$plural => $model->findAll($criteria),
+			'meta'  => array(
+				'total' => $total,
+			),
+		);
 	}
 
 	protected function createAndSaveObject($params)

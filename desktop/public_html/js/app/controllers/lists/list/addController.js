@@ -1,13 +1,6 @@
 App.ListAddController = Ember.ObjectController.extend({
-    units  : null,
-    needs  : 'list',
+    needs  : ['list', 'application'],
     list   : Ember.computed.alias('controllers.list.model'),
-    init   : function ()
-    {
-        this._super();
-
-        this.set('units', this.store.find('unit'));
-    },
     actions: {
         cancel: function ()
         {
@@ -25,8 +18,6 @@ App.ListAddController = Ember.ObjectController.extend({
 
             item.save().then(function (saved)
             {
-                console.log(saved);
-
                 list.get('items').pushObject(item);
                 list.save();
 

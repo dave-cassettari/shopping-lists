@@ -116,8 +116,6 @@ abstract class AbstractActiveRecord extends CActiveRecord implements JsonSeriali
 	{
 		$attributes = $this->getAttributes();
 
-		$attributes['id'] = intval($attributes['id']);
-
 		foreach ($this->relations() as $name => $config)
 		{
 			$type = $config[0];
@@ -125,15 +123,13 @@ abstract class AbstractActiveRecord extends CActiveRecord implements JsonSeriali
 			switch ($type)
 			{
 				case self::HAS_MANY:
-//					$attributes[$name] = $this->getRelated($name);
-
-					$key              = $name; //trim($name, 's') . '_ids';
+					$key              = $name;
 					$related          = $this->getRelated($name);
 					$attributes[$key] = array();
 
 					foreach ($related as $related_object)
 					{
-						$attributes[$key][] = intval($related_object->id);
+						$attributes[$key][] = $related_object->id;
 					}
 					break;
 
@@ -141,9 +137,9 @@ abstract class AbstractActiveRecord extends CActiveRecord implements JsonSeriali
 					$key     = $name . '_id';
 					$related = $this->getRelated($name);
 
-//					unset($attributes[$key]);
+					unset($attributes[$key]);
 
-//					$attributes[$key] = $related->id;
+					$attributes[$name] = $related->id;
 					break;
 			}
 		}

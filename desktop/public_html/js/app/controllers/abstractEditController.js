@@ -6,6 +6,17 @@ App.AbstractEditController = Ember.ObjectController.extend({
     {
         this.set('data', this.get('model.data'));
     }.observes('model.data'),
+    goBack     : function (params)
+    {
+        var routeParams = this.get('routeParams');
+
+        if (routeParams)
+        {
+            params = routeParams.call(this);
+        }
+
+        this.transitionToRoute(this.get('route'), params);
+    },
     actions    : {
         cancel: function ()
         {
@@ -23,26 +34,20 @@ App.AbstractEditController = Ember.ObjectController.extend({
                 item.set(name, data[name]);
             }
 
-            if (this.routeParams)
-            {
-                item = this.routeParams();
-            }
-
-            this.transitionToRoute(this.get('route'), item);
+            this.goBack(item);
         },
         save  : function ()
         {
             var self = this,
                 item = this.get('model');
 
-            item.save().then(function (params)
-            {
-                if (self.routeParams)
-                {
-                    params = self.routeParams();
-                }
+            console.log(item.get('unit.name'));
 
-                self.transitionToRoute(self.get('route'), params);
+            item.save().then(function (updatedItem)
+            {
+                console.log(updatedItem.get('unit.name'));
+
+                self.goBack(updatedItem);
             });
         }
     }

@@ -10,11 +10,9 @@
 
         {{#view App.InputView title='Units' errorName='unit_id'}}
             {{view Ember.Select
-            content=units
-            optionValuePath='content.id'
+            content=controllers.application.units
             optionLabelPath='content.name'
-            selection=model.unit
-            prompt='Choose a Unit'
+            selection=unit
             disabled=isLoading}}
         {{/view}}
 

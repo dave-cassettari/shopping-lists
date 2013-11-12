@@ -37,7 +37,11 @@ class Unit extends AbstractActiveRecord
 	public function relations()
 	{
 		return array(
-			'items' => array(self::HAS_MANY,
+			'canonical' => array(self::BELONGS_TO,
+				'Unit',
+				'id',
+			),
+			'items'     => array(self::HAS_MANY,
 				'Item',
 				'unit_id',
 			),

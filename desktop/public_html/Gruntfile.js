@@ -20,7 +20,7 @@ module.exports = function (grunt)
                     templateBasePath: /js\/app\/templates\//
                 },
                 files  : {
-                    'js/templates.js': 'js/app/templates/**/*.hbs'
+                    'js/dist/templates.js': 'js/app/templates/**/*.hbs'
                 }
             }
         },
@@ -36,18 +36,18 @@ module.exports = function (grunt)
                     'js/vendor/moment.js',
 //                    'js/vendor/createUsersInLocalStorage.js',
                 ],
-                dest: 'js/vendor.js'
+                dest: 'js/dist/vendor.js'
             },
             app : {
                 src : 'js/app/**/*.js',
-                dest: 'js/app.js'
+                dest: 'js/dist/app.js'
             }
         },
 
         uglify: {
             libs: {
                 files: {
-                    'js/app.min.js': ['js/vendor.js', 'js/app.js']
+                    'js/app.min.js': ['js/dist/vendor.js', 'js/dist/templates.js', 'js/dist/app.js']
                 }
             }
         },
@@ -58,7 +58,7 @@ module.exports = function (grunt)
                 tasks: ['emberTemplates']
             },
             concat        : {
-                files: ['js/**/*.js', '!js/vendor/**/*.js', '!js/app.js', '!js/vendor.js', '!js/templates.js'],
+                files: ['js/**/*.js', '!js/vendor/**/*.js', '!js/dist/*.js'],
                 tasks: ['concat']
             }
 //            sass          : {

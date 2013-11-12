@@ -5,4 +5,5 @@ mobile/.cordova
 mobile/dist/
 desktop/framework/
 desktop/runtime/
+desktop/public_html/js/dist/
 desktop/public_html/node_modules/
