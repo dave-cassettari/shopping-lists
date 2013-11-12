@@ -95,6 +95,14 @@ h3
 	color: #ddd;
 	font-size: 150%;
   }
+
+  input
+  {
+	margin: -2px -1px -4px;
+	padding: 0;
+
+	font-size: 100%;
+  }
 }
 
 a
@@ -142,6 +150,16 @@ button
   &.right
   {
 	margin-left: 1em;
+  }
+}
+
+.editable
+{
+  border-bottom: 1px dotted #ccc;
+
+  &:hover
+  {
+	border-bottom-color: #333;
   }
 }
 

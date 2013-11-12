@@ -138,55 +138,6 @@ function program6(depth0,data) {
   
 });
 
-Ember.TEMPLATES["layouts/input"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
-
-function program1(depth0,data) {
-  
-  var buffer = '', hashTypes, hashContexts;
-  data.buffer.push("\r\n	<span class='error'>");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.error", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\r\n    ");
-  return buffer;
-  }
-
-  data.buffer.push("<label>\r\n	<span class='title'>");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.title", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span>\r\n\r\n    <span class='input-container'>\r\n        ");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n	</span>\r\n\r\n    ");
-  hashTypes = {};
-  hashContexts = {};
-  stack1 = helpers['if'].call(depth0, "view.error", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
-  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\r\n</label>");
-  return buffer;
-  
-});
-
-Ember.TEMPLATES["layouts/modal"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
-this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
-  var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
-
-
-  data.buffer.push("<div class='modal-wrapper'>\r\n	<div class='modal'>\r\n        ");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("\r\n	</div>\r\n</div>");
-  return buffer;
-  
-});
-
 Ember.TEMPLATES["list"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
 this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
@@ -262,15 +213,15 @@ function program8(depth0,data) {
   },inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   stack2 = ((stack1 = helpers['link-to'] || depth0['link-to']),stack1 ? stack1.call(depth0, "list.add", options) : helperMissing.call(depth0, "link-to", "list.add", options));
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
-  data.buffer.push("\r\n	</div>\r\n\r\n	<h3><span class='total'>");
+  data.buffer.push("\r\n	</div>\r\n\r\n	<h3>\r\n		<span class='total'>");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "itemsCount", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</span> ");
+  data.buffer.push("</span>\r\n		<span class='title'>");
   hashTypes = {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "name", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push("</h3>\r\n\r\n	<ul class='items'>\r\n        ");
+  data.buffer.push("</span>\r\n	</h3>\r\n\r\n	<ul class='items'>\r\n        ");
   hashTypes = {};
   hashContexts = {};
   stack2 = helpers.each.call(depth0, "item", "in", "items", {hash:{},inverse:self.program(8, program8, data),fn:self.program(3, program3, data),contexts:[depth0,depth0,depth0],types:["ID","ID","ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
@@ -468,5 +419,105 @@ function program10(depth0,data) {
   if(stack2 || stack2 === 0) { data.buffer.push(stack2); }
   data.buffer.push("\r\n</ul>");
   return buffer;
+  
+});
+
+Ember.TEMPLATES["views/layouts/input"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
+  var buffer = '', stack1, hashTypes, hashContexts, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', hashTypes, hashContexts;
+  data.buffer.push("\r\n	<span class='error'>");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.error", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>\r\n    ");
+  return buffer;
+  }
+
+  data.buffer.push("<label>\r\n	<span class='title'>");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.title", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>\r\n\r\n    <span class='input-container'>\r\n        ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n	</span>\r\n\r\n    ");
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.error", {hash:{},inverse:self.noop,fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  data.buffer.push("\r\n</label>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["views/layouts/modal"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
+  var buffer = '', hashTypes, hashContexts, escapeExpression=this.escapeExpression;
+
+
+  data.buffer.push("<div class='modal-wrapper'>\r\n	<div class='modal'>\r\n        ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n	</div>\r\n</div>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["views/templates/editable"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
+  var stack1, hashTypes, hashContexts, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = '', stack1, hashContexts, hashTypes, options;
+  data.buffer.push("\r\n	<input type='text' class='editing' autofocus='autofocus' ");
+  hashContexts = {'value': depth0};
+  hashTypes = {'value': "ID"};
+  options = {hash:{
+    'value': ("view.text")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers['bind-attr'] || depth0['bind-attr']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "bind-attr", options))));
+  data.buffer.push(" ");
+  hashContexts = {'onEvent': depth0,'target': depth0};
+  hashTypes = {'onEvent': "STRING",'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "save", {hash:{
+    'onEvent': ("focusOut"),
+    'target': ("view")
+  },contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("/>\r\n");
+  return buffer;
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = '', hashContexts, hashTypes;
+  data.buffer.push("\r\n	<span class='editable' ");
+  hashContexts = {'target': depth0};
+  hashTypes = {'target': "STRING"};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "edit", {hash:{
+    'target': ("view")
+  },contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(">");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "view.text", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("</span>\r\n");
+  return buffer;
+  }
+
+  hashTypes = {};
+  hashContexts = {};
+  stack1 = helpers['if'].call(depth0, "view.edit", {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
+  if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
+  else { data.buffer.push(''); }
   
 });

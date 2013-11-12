@@ -1,6 +1,13 @@
 'use strict';
 
 window.App = Ember.Application.create();
+
+Ember.TextField.reopen({
+    focusOut: function ()
+    {
+        this.sendAction('focusOutAction', this.get('value'));
+    }
+});
 Ember.TextField.reopen({
     attributeBindings: ['autofocus']
 });
@@ -17,7 +24,9 @@ App.ListsCreateController = Ember.ObjectController.extend({
             var self = this,
                 list = this.get('model');
 
-            list.save().then(function (list)
+            var promise = list.save();
+
+            promise.then(function (list)
             {
                 self.transitionToRoute('list', list);
             });
@@ -112,6 +121,7 @@ App.ListEditController = Ember.ObjectController.extend({
 });
 App.ListController = Ember.ObjectController.extend({
     actions: {
+
     }
 });
 App.ItemController = Ember.ObjectController.extend({
@@ -494,28 +504,6 @@ App.TripsRoute = Ember.Route.extend({
 
 //App.ApplicationAdapter = DS.FixtureAdapter;
 
-var error = function (xhr, textStatus, err)
-{
-    console.log(xhr.responseText);
-
-    errors = null;
-
-    try
-    {
-        errors = JSON.parse(xhr.responseText).errors;
-    }
-    catch (e)
-    {
-
-    }
-
-    if (errors)
-    {
-        record.set('apiErrors', errors);
-    }
-    record.send('becameInvalid');
-};
-
 DS.Model.reopen({
     apiErrors: null
 });
@@ -524,7 +512,9 @@ DS.RESTAdapter.reopen({
     namespace   : 'api',
     createRecord: function (store, type, record)
     {
-        return this._super(store, type, record).then(null, function (response)
+        var promise = this._super(store, type, record);
+
+        promise.then(null, function (response)
         {
             var json = response.responseJSON;
 
@@ -533,19 +523,56 @@ DS.RESTAdapter.reopen({
                 record.set('apiErrors', json.apiErrors);
             }
         });
+
+        return promise;
+    },
+    updateRecord: function (store, type, record)
+    {
+        var promise = this._super(store, type, record);
+
+        promise.then(null, function (response)
+        {
+            var json = response.responseJSON;
+
+            if (json && json.hasOwnProperty('apiErrors'))
+            {
+                record.set('apiErrors', json.apiErrors);
+            }
+        });
+
+        return promise;
     }
 });
 
 App.ApplicationAdapter = DS.RESTAdapter;
+App.EditableView = Ember.View.extend({
+    text             : null,
+    editing          : false,
+    templateName     : 'views/templates/editable',
+    actions          : {
+        edit: function ()
+        {
+            console.log('edit');
+
+            this.set('edit', true);
+        },
+        save: function ()
+        {
+            console.log('save');
+
+            this.set('edit', false);
+        }
+    }
+});
 App.InputView = Ember.View.extend({
     title     : null,
     value     : null,
-    layoutName: 'layouts/input',
+    layoutName: 'views/layouts/input',
     error     : function ()
     {
         var error,
             errors = this.get('controller.model.apiErrors');
-        
+
         if (!errors || !errors.hasOwnProperty(this.value))
         {
             return null;
@@ -564,7 +591,7 @@ App.InputView = Ember.View.extend({
 });
 App.ModalView = Ember.View.extend(Ember.TargetActionSupport, {
     cancelAction    : 'cancel',
-    layoutName      : 'layouts/modal',
+    layoutName      : 'views/layouts/modal',
     didInsertElement: function ()
     {
         var $modal = this.$().find('.modal');

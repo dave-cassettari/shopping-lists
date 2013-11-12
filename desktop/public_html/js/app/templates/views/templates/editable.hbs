@@ -1,0 +1,5 @@
+{{#if view.edit}}
+	<input type='text' class='editing' autofocus='autofocus' {{bind-attr value=view.text}} {{action 'save' onEvent='focusOut' target='view'}}/>
+{{else}}
+	<span class='editable' {{action 'edit' target='view'}}>{{view.text}}</span>
+{{/if}}

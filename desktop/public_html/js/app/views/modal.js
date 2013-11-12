@@ -1,6 +1,6 @@
 App.ModalView = Ember.View.extend(Ember.TargetActionSupport, {
     cancelAction    : 'cancel',
-    layoutName      : 'layouts/modal',
+    layoutName      : 'views/layouts/modal',
     didInsertElement: function ()
     {
         var $modal = this.$().find('.modal');

@@ -1,12 +1,12 @@
 App.InputView = Ember.View.extend({
     title     : null,
     value     : null,
-    layoutName: 'layouts/input',
+    layoutName: 'views/layouts/input',
     error     : function ()
     {
         var error,
             errors = this.get('controller.model.apiErrors');
-        
+
         if (!errors || !errors.hasOwnProperty(this.value))
         {
             return null;

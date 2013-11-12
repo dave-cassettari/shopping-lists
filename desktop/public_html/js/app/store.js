@@ -22,28 +22,6 @@
 
 //App.ApplicationAdapter = DS.FixtureAdapter;
 
-var error = function (xhr, textStatus, err)
-{
-    console.log(xhr.responseText);
-
-    errors = null;
-
-    try
-    {
-        errors = JSON.parse(xhr.responseText).errors;
-    }
-    catch (e)
-    {
-
-    }
-
-    if (errors)
-    {
-        record.set('apiErrors', errors);
-    }
-    record.send('becameInvalid');
-};
-
 DS.Model.reopen({
     apiErrors: null
 });
@@ -52,7 +30,9 @@ DS.RESTAdapter.reopen({
     namespace   : 'api',
     createRecord: function (store, type, record)
     {
-        return this._super(store, type, record).then(null, function (response)
+        var promise = this._super(store, type, record);
+
+        promise.then(null, function (response)
         {
             var json = response.responseJSON;
 
@@ -61,6 +41,24 @@ DS.RESTAdapter.reopen({
                 record.set('apiErrors', json.apiErrors);
             }
         });
+
+        return promise;
+    },
+    updateRecord: function (store, type, record)
+    {
+        var promise = this._super(store, type, record);
+
+        promise.then(null, function (response)
+        {
+            var json = response.responseJSON;
+
+            if (json && json.hasOwnProperty('apiErrors'))
+            {
+                record.set('apiErrors', json.apiErrors);
+            }
+        });
+
+        return promise;
     }
 });
 

@@ -3,7 +3,10 @@
         {{#link-to 'list.add' class='button action-create'}}Add Item{{/link-to}}
 	</div>
 
-	<h3><span class='total'>{{itemsCount}}</span> {{name}}</h3>
+	<h3>
+		<span class='total'>{{itemsCount}}</span>
+		<span class='title'>{{name}}</span>
+	</h3>
 
 	<ul class='items'>
         {{#each item in items}}
