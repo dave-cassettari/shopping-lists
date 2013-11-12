@@ -32,18 +32,6 @@ DS.Store.reopen({
 
 DS.RESTAdapter.reopen({
     namespace   : 'api',
-//    ajax        : function (url, type, hash)
-//    {
-//        var promise = this._super(url, type, hash),
-//            complete = function ()
-//            {
-//                store.set('isLoading', false);
-//            };
-//
-//        promise.then(complete, complete);
-//
-//        return promise;
-//    },
     createRecord: function (store, type, record)
     {
         var promise = this._super(store, type, record);
@@ -53,9 +41,12 @@ DS.RESTAdapter.reopen({
         promise.then(function()
         {
             store.set('isLoading', false);
+            record.set('apiErrors', null);
         }, function (response)
         {
             var json = response.responseJSON;
+
+            console.log(json);
 
             if (json && json.hasOwnProperty('apiErrors'))
             {
@@ -71,9 +62,15 @@ DS.RESTAdapter.reopen({
     {
         var promise = this._super(store, type, record);
 
-        promise.then(null, function (response)
+        promise.then(function()
+        {
+            store.set('isLoading', false);
+            record.set('apiErrors', null);
+        }, function (response)
         {
             var json = response.responseJSON;
+
+            console.log(response);
 
             if (json && json.hasOwnProperty('apiErrors'))
             {

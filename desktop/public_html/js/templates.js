@@ -74,26 +74,23 @@ function program1(depth0,data) {
     'errorName': ("unit_id")
   },inverse:self.noop,fn:self.program(6, program6, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\r\n\r\n		<button class='action-cancel left' ");
+  data.buffer.push("\r\n\r\n        ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "cancel", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" type='reset'>Cancel</button>\r\n		<button class='action-save right' ");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "save", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" type='submit'>Save</button>\r\n	</form>\r\n");
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.DialogButtonsView", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n	</form>\r\n");
   return buffer;
   }
 function program2(depth0,data) {
   
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\r\n            ");
-  hashContexts = {'value': depth0,'autofocus': depth0};
-  hashTypes = {'value': "ID",'autofocus': "STRING"};
+  hashContexts = {'value': depth0,'autofocus': depth0,'disabled': depth0};
+  hashTypes = {'value': "ID",'autofocus': "STRING",'disabled': "ID"};
   options = {hash:{
     'value': ("name"),
-    'autofocus': ("autofocus")
+    'autofocus': ("autofocus"),
+    'disabled': ("isLoading")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.input || depth0.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
   data.buffer.push("\r\n        ");
@@ -104,10 +101,11 @@ function program4(depth0,data) {
   
   var buffer = '', stack1, hashContexts, hashTypes, options;
   data.buffer.push("\r\n            ");
-  hashContexts = {'value': depth0};
-  hashTypes = {'value': "ID"};
+  hashContexts = {'value': depth0,'disabled': depth0};
+  hashTypes = {'value': "ID",'disabled': "ID"};
   options = {hash:{
-    'value': ("quantity")
+    'value': ("quantity"),
+    'disabled': ("isLoading")
   },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
   data.buffer.push(escapeExpression(((stack1 = helpers.input || depth0.input),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "input", options))));
   data.buffer.push("\r\n        ");
@@ -118,14 +116,15 @@ function program6(depth0,data) {
   
   var buffer = '', hashContexts, hashTypes;
   data.buffer.push("\r\n            ");
-  hashContexts = {'content': depth0,'optionValuePath': depth0,'optionLabelPath': depth0,'selection': depth0,'prompt': depth0};
-  hashTypes = {'content': "ID",'optionValuePath': "STRING",'optionLabelPath': "STRING",'selection': "ID",'prompt': "STRING"};
+  hashContexts = {'content': depth0,'optionValuePath': depth0,'optionLabelPath': depth0,'selection': depth0,'prompt': depth0,'disabled': depth0};
+  hashTypes = {'content': "ID",'optionValuePath': "STRING",'optionLabelPath': "STRING",'selection': "ID",'prompt': "STRING",'disabled': "ID"};
   data.buffer.push(escapeExpression(helpers.view.call(depth0, "Ember.Select", {hash:{
     'content': ("units"),
     'optionValuePath': ("content.id"),
     'optionLabelPath': ("content.name"),
     'selection': ("model.unit"),
-    'prompt': ("Choose a Unit")
+    'prompt': ("Choose a Unit"),
+    'disabled': ("isLoading")
   },contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\r\n        ");
   return buffer;
@@ -279,7 +278,7 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
 
 function program1(depth0,data) {
   
-  var buffer = '', stack1, hashContexts, hashTypes, options;
+  var buffer = '', stack1, hashContexts, hashTypes;
   data.buffer.push("\r\n	<form class='edit' ");
   hashContexts = {'on': depth0};
   hashTypes = {'on': "STRING"};
@@ -294,29 +293,11 @@ function program1(depth0,data) {
     'errorName': ("name")
   },inverse:self.noop,fn:self.program(2, program2, data),contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data});
   if(stack1 || stack1 === 0) { data.buffer.push(stack1); }
-  data.buffer.push("\r\n\r\n		<button class='action-cancel left' ");
-  hashContexts = {'disabled': depth0};
-  hashTypes = {'disabled': "ID"};
-  options = {hash:{
-    'disabled': ("isLoading")
-  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers['bind-attr'] || depth0['bind-attr']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "bind-attr", options))));
-  data.buffer.push(" ");
+  data.buffer.push("\r\n\r\n        ");
   hashTypes = {};
   hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "cancel", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" type='reset'>Cancel</button>\r\n		<button class='action-save right' ");
-  hashContexts = {'disabled': depth0};
-  hashTypes = {'disabled': "ID"};
-  options = {hash:{
-    'disabled': ("isLoading")
-  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
-  data.buffer.push(escapeExpression(((stack1 = helpers['bind-attr'] || depth0['bind-attr']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "bind-attr", options))));
-  data.buffer.push(" ");
-  hashTypes = {};
-  hashContexts = {};
-  data.buffer.push(escapeExpression(helpers.action.call(depth0, "save", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
-  data.buffer.push(" type='submit'>Save</button>\r\n	</form>\r\n");
+  data.buffer.push(escapeExpression(helpers.view.call(depth0, "App.DialogButtonsView", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push("\r\n	</form>\r\n");
   return buffer;
   }
 function program2(depth0,data) {
@@ -485,6 +466,39 @@ helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
   hashContexts = {};
   data.buffer.push(escapeExpression(helpers._triageMustache.call(depth0, "yield", {hash:{},contexts:[depth0],types:["ID"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
   data.buffer.push("\r\n	</div>\r\n</div>");
+  return buffer;
+  
+});
+
+Ember.TEMPLATES["views/templates/dialogButtons"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {
+this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Ember.Handlebars.helpers); data = data || {};
+  var buffer = '', stack1, hashContexts, hashTypes, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+
+
+  data.buffer.push("<button class='action-cancel left' ");
+  hashContexts = {'disabled': depth0};
+  hashTypes = {'disabled': "ID"};
+  options = {hash:{
+    'disabled': ("isLoading")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers['bind-attr'] || depth0['bind-attr']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "bind-attr", options))));
+  data.buffer.push(" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "cancel", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" type='reset'>Cancel</button>\r\n<button class='action-save right' ");
+  hashContexts = {'disabled': depth0};
+  hashTypes = {'disabled': "ID"};
+  options = {hash:{
+    'disabled': ("isLoading")
+  },contexts:[],types:[],hashContexts:hashContexts,hashTypes:hashTypes,data:data};
+  data.buffer.push(escapeExpression(((stack1 = helpers['bind-attr'] || depth0['bind-attr']),stack1 ? stack1.call(depth0, options) : helperMissing.call(depth0, "bind-attr", options))));
+  data.buffer.push(" ");
+  hashTypes = {};
+  hashContexts = {};
+  data.buffer.push(escapeExpression(helpers.action.call(depth0, "save", {hash:{},contexts:[depth0],types:["STRING"],hashContexts:hashContexts,hashTypes:hashTypes,data:data})));
+  data.buffer.push(" type='submit'>Save</button>");
   return buffer;
   
 });

@@ -2,6 +2,12 @@ App.ListAddController = Ember.ObjectController.extend({
     units  : null,
     needs  : 'list',
     list   : Ember.computed.alias('controllers.list.model'),
+    init   : function ()
+    {
+        this._super();
+
+        this.set('units', this.store.find('unit'));
+    },
     actions: {
         cancel: function ()
         {

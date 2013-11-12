@@ -34,8 +34,6 @@ abstract class AbstractApiController extends AbstractController
 				$params = $this->getRestParams($class);
 				$result = $this->getExistingObject($params);
 
-//				var_Dump($params);
-
 				if (!$result)
 				{
 					throw new CHttpException(404);
@@ -49,8 +47,10 @@ abstract class AbstractApiController extends AbstractController
 					}
 				}
 
-				$result->save();
-
+				if ($result->validate())
+				{
+					$result->save();
+				}
 				break;
 
 			case 'POST':

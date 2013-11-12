@@ -1,5 +1,5 @@
 App.ItemRoute = Ember.Route.extend({
-    model          : function (params)
+    model: function (params)
     {
         var list = this.modelFor('list');
 
@@ -7,10 +7,5 @@ App.ItemRoute = Ember.Route.extend({
             id     : params.item_id,
             list_id: list.get('id')
         });
-    },
-    setupController: function (controller, model)
-    {
-        controller.set('model', model);
-        controller.set('units', controller.store.find('unit'));
     }
 });

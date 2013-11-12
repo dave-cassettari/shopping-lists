@@ -1,11 +1,11 @@
 {{#view App.ModalView cancelAction='cancel'}}
 	<form class='edit' {{action 'save' on='submit'}}>
         {{#view App.InputView title='Name' errorName='name'}}
-            {{input value=name autofocus='autofocus'}}
+            {{input value=name autofocus='autofocus' disabled=isLoading}}
         {{/view}}
 
         {{#view App.InputView title='Quantity' errorName='quantity'}}
-            {{input value=quantity}}
+            {{input value=quantity disabled=isLoading}}
         {{/view}}
 
         {{#view App.InputView title='Units' errorName='unit_id'}}
@@ -14,10 +14,10 @@
             optionValuePath='content.id'
             optionLabelPath='content.name'
             selection=model.unit
-            prompt='Choose a Unit'}}
+            prompt='Choose a Unit'
+            disabled=isLoading}}
         {{/view}}
 
-		<button class='action-cancel left' {{action 'cancel'}} type='reset'>Cancel</button>
-		<button class='action-save right' {{action 'save'}} type='submit'>Save</button>
+        {{view App.DialogButtonsView}}
 	</form>
 {{/view}}

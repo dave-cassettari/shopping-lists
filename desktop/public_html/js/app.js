@@ -24,6 +24,55 @@ Ember.ArrayController.reopen({
 Ember.TextField.reopen({
     attributeBindings: ['autofocus']
 });
+App.AbstractEditController = Ember.ObjectController.extend({
+    data       : null,
+    route      : null,
+    routeParams: null,
+    watch      : function ()
+    {
+        this.set('data', this.get('model.data'));
+    }.observes('model.data'),
+    actions    : {
+        cancel: function ()
+        {
+            var name,
+                data = this.get('data'),
+                item = this.get('model');
+
+            for (name in data)
+            {
+                if (!data.hasOwnProperty(name))
+                {
+                    continue;
+                }
+
+                item.set(name, data[name]);
+            }
+
+            if (this.routeParams)
+            {
+                item = this.routeParams();
+            }
+
+            this.transitionToRoute(this.get('route'), item);
+        },
+        save  : function ()
+        {
+            var self = this,
+                item = this.get('model');
+
+            item.save().then(function (params)
+            {
+                if (self.routeParams)
+                {
+                    params = self.routeParams();
+                }
+
+                self.transitionToRoute(self.get('route'), params);
+            });
+        }
+    }
+});
 App.ListsCreateController = Ember.ObjectController.extend({
     actions: {
         cancel: function ()
@@ -56,6 +105,12 @@ App.ListAddController = Ember.ObjectController.extend({
     units  : null,
     needs  : 'list',
     list   : Ember.computed.alias('controllers.list.model'),
+    init   : function ()
+    {
+        this._super();
+
+        this.set('units', this.store.find('unit'));
+    },
     actions: {
         cancel: function ()
         {
@@ -98,85 +153,21 @@ App.ListDeleteController = Ember.ObjectController.extend({
         }
     }
 });
-App.ListEditController = Ember.ObjectController.extend({
-    base   : null,
-    actions: {
-        cancel: function ()
-        {
-            var name,
-                base = this.get('base'),
-                model = this.get('model');
-
-            for (name in base)
-            {
-                if (!base.hasOwnProperty(name))
-                {
-                    continue;
-                }
-
-                model.set(name, base[name]);
-            }
-
-            this.transitionToRoute('list', model);
-        },
-        save  : function ()
-        {
-            var model = this.get('model');
-
-            model.save();
-
-            this.transitionToRoute('list', model);
-        }
-    }
+App.ListEditController = App.AbstractEditController.extend({
+    route: 'list'
 });
 App.ListController = Ember.ObjectController.extend({
     actions: {
 
     }
 });
-App.ItemController = Ember.ObjectController.extend({
-    needs  : 'list',
-    list   : Ember.computed.alias('controllers.list.model'),
-    actions: {
-        cancel: function ()
-        {
-//            var name,
-//                base = this.get('base'),
-//                model = this.get('model');
-//
-//            console.log(this.get('model.name'));
-//
-//            for (name in base)
-//            {
-//                if (!base.hasOwnProperty(name))
-//                {
-//                    continue;
-//                }
-//
-//                model.set(name, base[name]);
-//            }
-
-            this.transitionToRoute('list', this.get('list'));
-        },
-        save  : function ()
-        {
-            var self = this,
-                model = this.get('model');
-
-            console.log(this.get('model.unit.id'));
-
-            this.store.find('unit', this.get('model.unit')).then(function (unit)
-            {
-                console.log(unit);
-                console.log(model);
-
-                model.set('unit', unit);
-                model.save().then(function()
-                {
-                    self.transitionToRoute('list', self.get('list'));
-                });
-            });
-        }
+App.ItemController = App.AbstractEditController.extend({
+    needs      : 'list',
+    list       : Ember.computed.alias('controllers.list.model'),
+    route      : 'list',
+    routeParams: function ()
+    {
+        return this.get('list');
     }
 });
 App.Item = DS.Model.extend(Ember.Copyable, {
@@ -422,20 +413,15 @@ App.ListsRoute = Ember.Route.extend({
     }
 });
 App.ListAddRoute = Ember.Route.extend({
-    model          : function ()
+    model         : function ()
     {
         return this.get('store').createRecord('item');
     },
-    renderTemplate : function ()
+    renderTemplate: function ()
     {
         this.render('item', {
             controller: 'listAdd'
         });
-    },
-    setupController: function (controller, model)
-    {
-        controller.set('model', model);
-        controller.set('units', controller.store.find('unit'));
     }
 });
 App.ListDeleteRoute = Ember.Route.extend({
@@ -448,12 +434,12 @@ App.ListEditRoute = Ember.Route.extend({
     model          : function ()
     {
         return this.modelFor('list');
-    },
-    setupController: function (controller, model)
-    {
-        controller.set('model', model);
-        controller.set('base', model.get('data'));
     }
+//    setupController: function (controller, model)
+//    {
+//        controller.set('model', model);
+//        controller.set('data', model.get('data'));
+//    }
 });
 App.ListRoute = Ember.Route.extend({
     model: function (params)
@@ -462,7 +448,7 @@ App.ListRoute = Ember.Route.extend({
     }
 });
 App.ItemRoute = Ember.Route.extend({
-    model          : function (params)
+    model: function (params)
     {
         var list = this.modelFor('list');
 
@@ -470,11 +456,6 @@ App.ItemRoute = Ember.Route.extend({
             id     : params.item_id,
             list_id: list.get('id')
         });
-    },
-    setupController: function (controller, model)
-    {
-        controller.set('model', model);
-        controller.set('units', controller.store.find('unit'));
     }
 });
 App.TripsRoute = Ember.Route.extend({
@@ -517,18 +498,6 @@ DS.Store.reopen({
 
 DS.RESTAdapter.reopen({
     namespace   : 'api',
-//    ajax        : function (url, type, hash)
-//    {
-//        var promise = this._super(url, type, hash),
-//            complete = function ()
-//            {
-//                store.set('isLoading', false);
-//            };
-//
-//        promise.then(complete, complete);
-//
-//        return promise;
-//    },
     createRecord: function (store, type, record)
     {
         var promise = this._super(store, type, record);
@@ -538,9 +507,12 @@ DS.RESTAdapter.reopen({
         promise.then(function()
         {
             store.set('isLoading', false);
+            record.set('apiErrors', null);
         }, function (response)
         {
             var json = response.responseJSON;
+
+            console.log(json);
 
             if (json && json.hasOwnProperty('apiErrors'))
             {
@@ -556,9 +528,15 @@ DS.RESTAdapter.reopen({
     {
         var promise = this._super(store, type, record);
 
-        promise.then(null, function (response)
+        promise.then(function()
+        {
+            store.set('isLoading', false);
+            record.set('apiErrors', null);
+        }, function (response)
         {
             var json = response.responseJSON;
+
+            console.log(response);
 
             if (json && json.hasOwnProperty('apiErrors'))
             {
@@ -571,6 +549,32 @@ DS.RESTAdapter.reopen({
 });
 
 App.ApplicationAdapter = DS.RESTAdapter;
+App.DialogButtonsView = Ember.View.extend({
+//    title     : null,
+//    errorName : null,
+    templateName: 'views/templates/dialogButtons'
+//    error     : function ()
+//    {
+//        var error,
+//            name = this.get('errorName'),
+//            errors = this.get('controller.model.apiErrors');
+//
+//        if (!errors || !errors.hasOwnProperty(name))
+//        {
+//            return null;
+//        }
+//
+//        error = errors[name];
+//
+//        if (error.hasOwnProperty('length') && error.length > 0)
+//        {
+//            return error[0];
+//        }
+//
+//        return error;
+//
+//    }.property('controller.model.apiErrors')
+});
 App.EditableView = Ember.View.extend({
     text             : null,
     editing          : false,
