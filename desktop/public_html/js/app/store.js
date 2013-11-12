@@ -22,12 +22,46 @@
 
 //App.ApplicationAdapter = DS.FixtureAdapter;
 
+var error = function (xhr, textStatus, err)
+{
+    console.log(xhr.responseText);
+
+    errors = null;
+
+    try
+    {
+        errors = JSON.parse(xhr.responseText).errors;
+    }
+    catch (e)
+    {
+
+    }
+
+    if (errors)
+    {
+        record.set('apiErrors', errors);
+    }
+    record.send('becameInvalid');
+};
+
 DS.Model.reopen({
     apiErrors: null
 });
 
 DS.RESTAdapter.reopen({
-    namespace: 'api'
+    namespace   : 'api',
+    createRecord: function (store, type, record)
+    {
+        return this._super(store, type, record).then(null, function (response)
+        {
+            var json = response.responseJSON;
+
+            if (json && json.hasOwnProperty('apiErrors'))
+            {
+                record.set('apiErrors', json.apiErrors);
+            }
+        });
+    }
 });
 
 App.ApplicationAdapter = DS.RESTAdapter;

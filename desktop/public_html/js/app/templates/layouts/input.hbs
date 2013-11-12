@@ -5,5 +5,7 @@
         {{yield}}
 	</span>
 
-	<span class='error'>{{errors.email}}</span>
+    {{#if view.error}}
+	<span class='error'>{{view.error}}</span>
+    {{/if}}
 </label>

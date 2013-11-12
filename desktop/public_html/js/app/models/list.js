@@ -7,18 +7,6 @@ App.List = DS.Model.extend(Ember.Copyable, {
     {
         return this.get('items.length');
     }.property('items.@each')
-
-//    becameError: function (errors)
-//    {
-//        console.log('ERROR');
-//        console.log(errors);
-//        console.log(errors.get('data'));
-//    },
-//
-//    becameInvalid: function (errors)
-//    {
-//        console.log(errors);
-//    }
 });
 
 App.List.FIXTURES = [

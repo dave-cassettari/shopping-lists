@@ -36,9 +36,9 @@ App.ListsRoute = Ember.Route.extend({
         {
             this.transitionTo('lists.create');
         }
-        else if (length === 1)
-        {
-            this.transitionTo('list', lists.get('firstObject'));
-        }
+//        else if (length === 1)
+//        {
+//            this.transitionTo('list', lists.get('firstObject'));
+//        }
     }
 });

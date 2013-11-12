@@ -239,7 +239,7 @@ abstract class AbstractApiController extends AbstractController
 				$params = CMap::mergeArray($params, $array);
 			}
 		}
-		
+
 		if ($child !== NULL)
 		{
 			if (!isset($params[$child]))

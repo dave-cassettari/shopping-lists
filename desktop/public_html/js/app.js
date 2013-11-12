@@ -8,36 +8,18 @@ App.ListsCreateController = Ember.ObjectController.extend({
     actions: {
         cancel: function ()
         {
+            this.get('model').deleteRecord();
+
             this.transitionToRoute('lists');
         },
         save  : function ()
         {
             var self = this,
-                list = this.store.createRecord('list', this.get('model'));
-
-            list.on('becameInvalid', function (response)
-            {
-                console.log(response);
-                self.set('model', response);
-            });
+                list = this.get('model');
 
             list.save().then(function (list)
             {
                 self.transitionToRoute('list', list);
-            }, function (response)
-            {
-                var json = response.responseJSON;
-
-                console.log(json);
-
-                if (json && json.hasOwnProperty('apiErrors'))
-                {
-                    list.set('apiErrors', json.apiErrors);
-
-                    console.log(json.apiErrors);
-                }
-
-                list.send('becameInvalid');
             });
         }
     }
@@ -228,18 +210,6 @@ App.List = DS.Model.extend(Ember.Copyable, {
     {
         return this.get('items.length');
     }.property('items.@each')
-
-//    becameError: function (errors)
-//    {
-//        console.log('ERROR');
-//        console.log(errors);
-//        console.log(errors.get('data'));
-//    },
-//
-//    becameInvalid: function (errors)
-//    {
-//        console.log(errors);
-//    }
 });
 
 App.List.FIXTURES = [
@@ -378,7 +348,8 @@ App.IndexRoute = Ember.Route.extend({
 App.ListsCreateRoute = Ember.Route.extend({
     model         : function ()
     {
-        return Ember.Object.create();
+        return this.get('store').createRecord('list');
+//        return Ember.Object.create();
     },
     renderTemplate: function ()
     {
@@ -431,10 +402,10 @@ App.ListsRoute = Ember.Route.extend({
         {
             this.transitionTo('lists.create');
         }
-        else if (length === 1)
-        {
-            this.transitionTo('list', lists.get('firstObject'));
-        }
+//        else if (length === 1)
+//        {
+//            this.transitionTo('list', lists.get('firstObject'));
+//        }
     }
 });
 App.ListAddRoute = Ember.Route.extend({
@@ -523,18 +494,73 @@ App.TripsRoute = Ember.Route.extend({
 
 //App.ApplicationAdapter = DS.FixtureAdapter;
 
+var error = function (xhr, textStatus, err)
+{
+    console.log(xhr.responseText);
+
+    errors = null;
+
+    try
+    {
+        errors = JSON.parse(xhr.responseText).errors;
+    }
+    catch (e)
+    {
+
+    }
+
+    if (errors)
+    {
+        record.set('apiErrors', errors);
+    }
+    record.send('becameInvalid');
+};
+
 DS.Model.reopen({
     apiErrors: null
 });
 
 DS.RESTAdapter.reopen({
-    namespace: 'api'
+    namespace   : 'api',
+    createRecord: function (store, type, record)
+    {
+        return this._super(store, type, record).then(null, function (response)
+        {
+            var json = response.responseJSON;
+
+            if (json && json.hasOwnProperty('apiErrors'))
+            {
+                record.set('apiErrors', json.apiErrors);
+            }
+        });
+    }
 });
 
 App.ApplicationAdapter = DS.RESTAdapter;
 App.InputView = Ember.View.extend({
     title     : null,
-    layoutName: 'layouts/input'
+    value     : null,
+    layoutName: 'layouts/input',
+    error     : function ()
+    {
+        var error,
+            errors = this.get('controller.model.apiErrors');
+        
+        if (!errors || !errors.hasOwnProperty(this.value))
+        {
+            return null;
+        }
+
+        error = errors[this.value];
+
+        if (error.hasOwnProperty('length') && error.length > 0)
+        {
+            return error[0];
+        }
+
+        return error;
+
+    }.property('controller.model.apiErrors')
 });
 App.ModalView = Ember.View.extend(Ember.TargetActionSupport, {
     cancelAction    : 'cancel',

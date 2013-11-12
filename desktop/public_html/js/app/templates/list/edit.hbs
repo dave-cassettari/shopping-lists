@@ -1,10 +1,8 @@
 {{#view App.ModalView cancelAction='cancel'}}
 	<form class='edit' {{action 'save' on='submit'}}>
-        {{#view App.InputView title='Name'}}
+        {{#view App.InputView title='Name' value='name'}}
             {{input value=name autofocus='autofocus'}}
         {{/view}}
-
-        {{apiErrors}}
 
 		<button class='action-cancel left' {{action 'cancel'}} type='reset'>Cancel</button>
 		<button class='action-save right' {{action 'save'}} type='submit'>Save</button>
