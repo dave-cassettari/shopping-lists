@@ -4,3 +4,5 @@ mobile/.bowerrc
 mobile/.cordova
 mobile/dist/
 desktop/node_modules/
+api/framework/
+api/runtime/
