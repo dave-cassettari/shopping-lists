@@ -20,6 +20,10 @@
 			<ul>
 				<li data-ng-repeat='item in list.items'>
 					-- <span class='item-title' data-ng-bind='item.name'></span>
+
+					<div>
+						---- <span class='item-title' data-ng-bind='item.list.name'></span>
+					</div>
 				</li>
 			</ul>
 		</li>

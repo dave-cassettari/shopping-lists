@@ -4,12 +4,72 @@ var app = angular.module('lists', ['ngResource']);
 
 app.factory('$relationalResource', ['$resource', '$injector', function ($resource, $injector)
 {
-    return function (url, paramDefaults, actions)
-    {
-        var Resource = $resource(url, paramDefaults, actions);
+    var cache = {},
+        models = {};
 
-        Resource.hasMany = { };
-        Resource.belongsTo = { };
+    return function (name, url, paramDefaults, actions)
+    {
+        var id = 'id',
+            Resource = $resource(url, paramDefaults, actions);
+
+        Resource.prototype.hasMany = { };
+        Resource.prototype.belongsTo = { };
+
+        cache[name] = {};
+        models[name] = Resource;
+
+        var superGet = Resource.get;
+        var superQuery = Resource.query;
+
+        var addToCache = function (object)
+        {
+            var id = object['id'];
+
+            cache[name][id] = object;
+        };
+
+        Resource.get = function (params, success, error)
+        {
+            var id;
+
+            if (params.hasOwnProperty('id'))
+            {
+                id = params['id'];
+
+                if (cache[name].hasOwnProperty(id))
+                {
+                    return cache[name][id];
+                }
+            }
+
+            return superGet(params, function (response)
+            {
+                addToCache(response);
+
+                if (success)
+                {
+                    success(response);
+                }
+            }, error);
+        };
+
+        Resource.query = function (params, success, error)
+        {
+            // TODO: used cached
+
+            return superQuery(params, function (response)
+            {
+                angular.forEach(response, function (object)
+                {
+                    addToCache(object);
+                });
+
+                if (success)
+                {
+                    success(response);
+                }
+            }, error);
+        };
 
         Resource.init = function ()
         {
@@ -22,35 +82,39 @@ app.factory('$relationalResource', ['$resource', '$injector', function ($resourc
                     continue;
                 }
 
-                (function (name)
+                (function ()
                 {
-                    var cached = null,
-                        relation = Resource.belongsTo[name],
-                        resource = relation.resource,
-                        foreignKey = relation.key,
-                        related = $injector.get(resource);
+                    var getter = name;
 
-                    Resource.prototype.__defineGetter__(name, function ()
+                    Resource.prototype.__defineGetter__(getter, function ()
                     {
-                        if (cached !== null)
+                        var cacheKey = '__' + getter,
+                            relation = Resource.belongsTo[getter],
+                            foreignKey = relation.key,
+                            related = models[relation.resource];
+
+                        if (this.hasOwnProperty(cacheKey))
                         {
-                            return cached;
+                            return this[cacheKey];
                         }
 
-                        var name = foreignKey,
-                            value = this['id'],
-                            params = {};
-
-                        if (angular.isArray(value))
+                        if (!this.hasOwnProperty(foreignKey))
                         {
-                            name = name + '[]';
+                            return null;
                         }
 
-                        params[name] = value;
-
-                        return cached = related.query(params);
+                        return this[cacheKey] = related.get({
+                            id: this[foreignKey]
+                        });
                     });
-                })(name);
+
+                    Resource.prototype.__defineSetter__(getter, function (value)
+                    {
+                        var cacheKey = '__' + getter;
+
+                        this[cacheKey] = value;
+                    });
+                })();
             }
 
             for (name in Resource.hasMany)
@@ -60,19 +124,25 @@ app.factory('$relationalResource', ['$resource', '$injector', function ($resourc
                     continue;
                 }
 
-                (function (name)
+                (function ()
                 {
-                    var cached = null,
-                        relation = Resource.hasMany[name],
-                        resource = relation.resource,
-                        foreignKey = relation.key,
-                        related = $injector.get(resource);
+                    var getter = name;
 
-                    Resource.prototype.__defineGetter__(name, function ()
+                    Resource.prototype.__defineGetter__(getter, function ()
                     {
-                        if (cached !== null)
+                        var cacheKey = '__' + getter,
+                            relation = Resource.hasMany[getter],
+                            foreignKey = relation.key,
+                            related = models[relation.resource];
+
+                        if (this.hasOwnProperty(cacheKey))
                         {
-                            return cached;
+                            return this[cacheKey];
+                        }
+
+                        if (!this.hasOwnProperty('id'))
+                        {
+                            return null;
                         }
 
                         var name = foreignKey,
@@ -86,9 +156,16 @@ app.factory('$relationalResource', ['$resource', '$injector', function ($resourc
 
                         params[name] = value;
 
-                        return cached = related.query(params);
+                        return this[cacheKey] = related.query(params);
                     });
-                })(name);
+
+                    Resource.prototype.__defineSetter__(getter, function (value)
+                    {
+                        var cacheKey = '__' + getter;
+
+                        this[cacheKey] = value;
+                    });
+                })();
             }
 
             return Resource;
@@ -100,7 +177,7 @@ app.factory('$relationalResource', ['$resource', '$injector', function ($resourc
 
 app.factory('User', ['$relationalResource', function ($relationalResource)
 {
-    var User = $relationalResource('/api/items/:id',
+    var User = $relationalResource('User', '/api/items/:id',
         {
             id     : '@id',
             list_id: '@list_id'
@@ -116,15 +193,18 @@ app.factory('User', ['$relationalResource', function ($relationalResource)
 
 app.factory('Item', ['$relationalResource', function ($relationalResource)
 {
-    var Item = $relationalResource('/api/items/:id',
+    var Item = $relationalResource('Item', '/api/items/:id',
         {
             id     : '@id',
             list_id: '@list_id'
         });
 
-    Item.prototype.belongsTo =
+    Item.belongsTo =
     {
-        list_id: 'List'
+        list: {
+            resource: 'List',
+            key     : 'list_id'
+        }
     };
 
     return Item.init();
@@ -132,15 +212,15 @@ app.factory('Item', ['$relationalResource', function ($relationalResource)
 
 app.factory('List', ['$relationalResource', function ($relationalResource)
 {
-    var List = $relationalResource('/api/lists/:id',
+    var List = $relationalResource('List', '/api/lists/:id',
         {
             id: '@id'
         });
 
-    List.belongsTo =
-    {
-        user_id: 'Item'
-    };
+//    List.belongsTo =
+//    {
+//        user_id: 'Item'
+//    };
 
     List.hasMany =
     {
@@ -153,71 +233,37 @@ app.factory('List', ['$relationalResource', function ($relationalResource)
     return List.init();
 }]);
 
-/*app.factory('List', ['$resource', '$injector', function ($resource, $injector)
-{
-    var List = $resource('/api/lists/:id',
-        {
-            id: '@id'
-        });
-
-    List.belongsTo =
-    {
-        user_id: 'Item'
-    };
-
-    List.hasMany =
-    {
-        items: {
-            resource: 'Item',
-            key     : 'list_id'
-        }
-    };
-
-    for (var name in List.hasMany)
-    {
-        if (!List.hasMany.hasOwnProperty(name))
-        {
-            continue;
-        }
-
-        (function (name)
-        {
-            var cached = null,
-                relation = List.hasMany[name],
-                resource = relation.resource,
-                foreignKey = relation.key,
-                related = $injector.get(resource);
-
-            List.prototype.__defineGetter__(name, function ()
-            {
-                if (cached !== null)
-                {
-                    return cached;
-                }
-
-                var name = foreignKey,
-                    value = this['id'],
-                    params = {};
-
-                if (angular.isArray(value))
-                {
-                    name = name + '[]';
-                }
-
-                params[name] = value;
-
-                return cached = related.query(params);
-            });
-        })(name);
-    }
-
-    return List;
-}]);*/
-
 var ListsController = function ($scope, List, Item)
 {
     angular.extend($scope, {
-        lists: List.query()
+        lists: List.query({}, function (lists)
+        {
+            var oldList = lists[0],
+                newList = new List({
+                    'name': 'New List 1'
+                });
+
+            oldList.items.$promise.then(function (items)
+            {
+                var newItem = new Item({
+                    name: 'test item 1'
+                });
+
+                $scope.lists.push(newList);
+
+                console.log(newList.items);
+
+                newList.items = [];
+
+                console.log(newList.items);
+
+                newList.items.push(newItem);
+
+                console.log(newList.items);
+
+                newItem.list = newList;
+            });
+        })
     });
 };
 
