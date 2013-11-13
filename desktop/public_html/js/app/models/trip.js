@@ -1,6 +1,6 @@
 App.Trip = DS.Model.extend(Ember.Copyable, {
-    name : DS.attr(),
-    lists: DS.attr()
+    createdOn: DS.attr(),
+    user     : DS.belongsTo('user', { async: true}),
+    lists    : DS.hasMany('list', { async: true }),
+    tripItems: DS.hasMany('tripItem', { async: true })
 });
-
-App.Trip.FIXTURES = [];

@@ -1,0 +1,23 @@
+{{outlet}}
+
+<div class='button-group right'>
+    {{#link-to 'trips.create' class='button action-create'}}Create New Trip{{/link-to}}
+</div>
+
+<h2><span class='total'>{{tripsCount}}</span> Trips</h2>
+
+<ul class='items'>
+    {{#each trip in controller}}
+		<li>
+            <span class='list-wrapper'>
+                {{#link-to 'trip' trip class='item-title'}}
+                    {{trip.createdOn}}
+                    {{trip.created_on}}
+                    {{trip.id}}
+                {{/link-to}}
+            </span>
+		</li>
+    {{else}}
+		<li class='empty'>Add a new Trip to start shopping</li>
+    {{/each}}
+</ul>

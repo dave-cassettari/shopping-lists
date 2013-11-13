@@ -1,4 +1,4 @@
-{{#view App.ModalView cancelAction='cancel'}}
+{{#view App.ModalView}}
 	<form class='edit' {{action 'save' on='submit'}}>
         {{#view App.InputView title='Name' errorName='name'}}
             {{input value=name autofocus='autofocus' disabled=isLoading}}

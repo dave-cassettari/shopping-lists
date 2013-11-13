@@ -22,6 +22,7 @@ App.Router.map(function ()
         this.resource('trip', { path: '/:trip_id' }, function ()
         {
             this.route('edit');
+            this.route('delete');
         });
         this.route('create');
     });

@@ -5,7 +5,8 @@ class ApplicationController extends AbstractController
 	public function actions()
 	{
 		return array(
-			'index' => 'application.controllers.application.ViewAction',
+			'ember'   => 'application.controllers.application.EmberAction',
+			'angular' => 'application.controllers.application.AngularAction',
 		);
 	}
 }

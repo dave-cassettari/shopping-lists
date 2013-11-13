@@ -1,0 +1,27 @@
+<section>
+	<h3>
+		<span class='total'>{{incompleteCount}}</span>
+		<span class='title'>Remaining</span>
+	</h3>
+
+	<ul class='items'>
+        {{#each list in lists}}
+            {{#each item in list.items}}
+				<li>
+					<label class='item-complete-wrapper left'>
+						<input type='checkbox' {{bind-attr class=':item-complete item.complete::is-incomplete'}} {{action 'toggleComplete' item}} />
+					</label>
+
+                    <span class=' list-wrapper'>
+						<span class='item-quantity'>{{item.amount}}</span>
+                        <span class='item-title'>{{item.name}}</span>
+                    </span>
+				</li>
+            {{/each}}
+        {{else}}
+			<li class='empty'>This Trip has no Items yet</li>
+        {{/each}}
+	</ul>
+
+    {{outlet}}
+</section>

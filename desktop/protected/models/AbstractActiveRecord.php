@@ -116,33 +116,34 @@ abstract class AbstractActiveRecord extends CActiveRecord implements JsonSeriali
 	{
 		$attributes = $this->getAttributes();
 
-		foreach ($this->relations() as $name => $config)
-		{
-			$type = $config[0];
-
-			switch ($type)
-			{
-				case self::HAS_MANY:
-					$key              = $name;
-					$related          = $this->getRelated($name);
-					$attributes[$key] = array();
-
-					foreach ($related as $related_object)
-					{
-						$attributes[$key][] = $related_object->id;
-					}
-					break;
-
-				case self::BELONGS_TO:
-					$key     = $name . '_id';
-					$related = $this->getRelated($name);
-
-					unset($attributes[$key]);
-
-					$attributes[$name] = $related->id;
-					break;
-			}
-		}
+//		foreach ($this->relations() as $name => $config)
+//		{
+//			$type = $config[0];
+//
+//			switch ($type)
+//			{
+//				case self::HAS_MANY:
+//				case self::MANY_MANY:
+//					$key              = rtrim($name, 's') . '_ids';
+//					$related          = $this->getRelated($name);
+//					$attributes[$key] = array();
+//
+//					foreach ($related as $related_object)
+//					{
+//						$attributes[$key][] = $related_object->id;
+//					}
+//					break;
+//
+//				case self::BELONGS_TO:
+//					$key     = $name . '_id';
+//					$related = $this->getRelated($name);
+//
+////					unset($attributes[$key]);
+//
+////					$attributes[$name] = $related->id;
+//					break;
+//			}
+//		}
 
 		return $attributes;
 	}

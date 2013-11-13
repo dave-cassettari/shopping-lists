@@ -3,16 +3,17 @@ module.exports = function (grunt)
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-//        sass: {
-//            dist: {
-//                options: {
-//                    style: 'compressed'
-//                },
-//                files  : {
-//                    'css/style.css': 'css/style.scss'
-//                }
-//            }
-//        },
+        sass: {
+            dist: {
+                options: {
+                    style        : 'compressed',
+                    cacheLocation: 'css/.sass-cache',
+                },
+                files  : {
+                    'css/style.css': 'css/style.scss'
+                }
+            }
+        },
 
         emberTemplates: {
             compile: {
@@ -60,14 +61,15 @@ module.exports = function (grunt)
             concat        : {
                 files: ['js/**/*.js', '!js/vendor/**/*.js', '!js/dist/*.js'],
                 tasks: ['concat']
+            },
+            sass          : {
+                files: ['css/*.scss'],
+                tasks: ['sass']
             }
-//            sass          : {
-//                files: ['css/*.scss'],
-//                tasks: ['sass']
-//            }
         }
     });
 
+    grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');

@@ -9,11 +9,11 @@ App.ListsCreateController = Ember.ObjectController.extend({
         confirm: function ()
         {
             var self = this,
-                list = this.get('model');
+                model = this.get('model');
 
-            list.save().then(function (list)
+            model.save().then(function (updatedModel)
             {
-                self.transitionToRoute('list', list);
+                self.transitionToRoute('trip', updatedModel);
             });
         }
     }

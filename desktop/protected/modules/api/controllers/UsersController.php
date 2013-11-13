@@ -9,6 +9,6 @@ class UsersController extends AbstractApiController
 
 	protected function createObject()
 	{
-		return new User();
+		return new User;
 	}
 }

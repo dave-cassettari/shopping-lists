@@ -9,6 +9,6 @@ class UnitsController extends AbstractApiController
 
 	protected function createObject()
 	{
-		return new Unit();
+		return new Unit;
 	}
 }

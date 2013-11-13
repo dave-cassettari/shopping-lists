@@ -1,12 +1,6 @@
 App.ItemDeleteController = Ember.ObjectController.extend({
     needs  : ['list'],
     list   : Ember.computed.alias('controllers.list.model'),
-    init   : function ()
-    {
-        this._super();
-
-        console.log('delete');
-    },
     actions: {
         cancel : function ()
         {

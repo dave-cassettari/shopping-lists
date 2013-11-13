@@ -9,6 +9,6 @@ class ItemsController extends AbstractApiController
 
 	protected function createObject()
 	{
-		return new Item();
+		return new Item;
 	}
 }

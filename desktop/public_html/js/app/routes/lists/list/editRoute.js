@@ -1,5 +1,5 @@
 App.ListEditRoute = Ember.Route.extend({
-    model          : function ()
+    model: function ()
     {
         return this.modelFor('list');
     }

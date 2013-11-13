@@ -1,6 +1,6 @@
 <?php
 
-class ViewAction extends AbstractAction
+class AngularAction extends AbstractAction
 {
 	public function run()
 	{
@@ -10,6 +10,6 @@ class ViewAction extends AbstractAction
 
 		$data = array();
 
-		return $this->title('Welcome')->render('view', $data);
+		return $this->title('Welcome')->render('angular', $data);
 	}
 }

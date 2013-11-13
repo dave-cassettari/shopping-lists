@@ -2,10 +2,15 @@
 
 abstract class AbstractApiController extends AbstractController
 {
+	const ANGULAR         = TRUE;
 	const DEFAULT_USER_ID = 1;
 
 	public function actionIndex()
 	{
+//		$trip = Trip::getFromID(1);
+//
+//		var_dump($trip->tripItems());exit;
+
 		$result = NULL;
 		$model  = $this->getModel();
 		$class  = $this->getClassName($model);
@@ -100,21 +105,24 @@ abstract class AbstractApiController extends AbstractController
 				break;
 		}
 
-		if (is_object($result))
+		if (!self::ANGULAR)
 		{
-			if ($result instanceof AbstractActiveRecord && $result->hasErrors())
+			if (is_object($result))
 			{
-				http_response_code(422);
+				if ($result instanceof AbstractActiveRecord && $result->hasErrors())
+				{
+					http_response_code(422);
 
-				$result = array(
-					'apiErrors' => $result->getErrors(),
-				);
-			}
-			else
-			{
-				$result = array(
-					$this->getClassName($result) => $result
-				);
+					$result = array(
+						'apiErrors' => $result->getErrors(),
+					);
+				}
+				else
+				{
+					$result = array(
+						$this->getClassName($result) => $result
+					);
+				}
 			}
 		}
 
@@ -144,17 +152,39 @@ abstract class AbstractApiController extends AbstractController
 		$class    = $this->getClassName($model);
 		$plural   = self::makePlural($class);
 		$criteria = new CDbCriteria();
+		$offset   = NULL;
+		$limit    = NULL;
 
 		if (isset($params['offset']))
 		{
-			$criteria->offset = intval($params['offset']);
-		}
+			$offset = intval($params['offset']);
 
-		$total = $model->count($criteria);
+			unset($params['offset']);
+		}
 
 		if (isset($params['limit']))
 		{
-			$criteria->limit = intval($params['limit']);
+			$limit = intval($params['limit']);
+
+			unset($params['limit']);
+		}
+
+		$criteria->mergeWith($this->getCriteriaFromParams($params));
+
+//		foreach ($params as $name => $value)
+//		{
+//			$criteria->addCondition()
+//		}
+
+		$criteria->offset = $offset;
+
+		$total = $model->count($criteria);
+
+		$criteria->limit = $limit;
+
+		if (self::ANGULAR)
+		{
+			return $model->findAll($criteria);
 		}
 
 		return array(
@@ -206,12 +236,27 @@ abstract class AbstractApiController extends AbstractController
 
 		if (isset($params['id']))
 		{
-			$id = intval($params['id']);
+			$id = $params['id'];
 
-			return $model::getFromID($id);
+			if (!is_array($id))
+			{
+				return $model::getFromID($id);
+			}
 		}
 
 		$multiple = FALSE;
+		$criteria = $this->getCriteriaFromParams($params, $multiple);
+
+		if ($multiple)
+		{
+			return $model->findAll($criteria);
+		}
+
+		return $model->find($criteria);
+	}
+
+	private function getCriteriaFromParams(array $params, &$multiple = FALSE)
+	{
 		$criteria = new CDbCriteria();
 
 		foreach ($params as $name => $value)
@@ -236,12 +281,7 @@ abstract class AbstractApiController extends AbstractController
 			}
 		}
 
-		if ($multiple)
-		{
-			return $model->findAll($criteria);
-		}
-
-		return $model->find($criteria);
+		return $criteria;
 	}
 
 	private function getRestParams($child = NULL)
@@ -292,7 +332,7 @@ abstract class AbstractApiController extends AbstractController
 				return 'list';
 
 			default:
-				return strtolower($class);
+				return lcfirst($class);
 		}
 	}
 }

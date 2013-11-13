@@ -29,7 +29,7 @@ switch ($host)
 		break;
 
 	default:
-		$connection = 'mysql:host=localhost;dbname=lists';
+		$connection = 'mysql:host=localhost;dbname=dev_lists';
 		$username   = 'root';
 		$password   = 'admin';
 		break;
@@ -82,7 +82,8 @@ return array(
 		'urlManager'   => array(
 			'urlFormat'      => 'path',
 			'rules'          => array(
-				''                   => 'application/index',
+				''                   => 'application/ember',
+				'angular'            => 'application/angular',
 				'login'              => 'site/login',
 				'logout'             => 'site/logout',
 				'api/<_model>/<_id>' => 'api/<_model>/index/id/<_id>',

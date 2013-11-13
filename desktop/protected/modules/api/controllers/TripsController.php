@@ -1,15 +1,15 @@
 <?php
 
-class ListsController extends AbstractApiController
+class TripsController extends AbstractApiController
 {
 	protected function getModel()
 	{
-		return ShoppingList::model();
+		return Trip::model();
 	}
 
 	protected function createObject()
 	{
-		return new ShoppingList;
+		return new Trip;
 	}
 
 	protected function createAndSaveObject($params)
