@@ -10,7 +10,7 @@
 	<link rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Open+Sans:300,600' x>
 	<link rel='stylesheet' type='text/css' href='/css/style.css'>
 </head>
-<body data-ng-app='lists'>
+<body data-ng-app='app'>
 
 <div data-ng-controller='ListsController'>
 	<ul>
@@ -32,7 +32,7 @@
 
 <script src='/js/vendor/angular.min.js'></script>
 <script src='/js/vendor/angular-resource.min.js'></script>
-<script src='/js/app/angular.js'></script>
+<script src='/js/app/app.js'></script>
 
 </body>
 </html>

@@ -7,7 +7,7 @@ module.exports = function (grunt)
             dist: {
                 options: {
                     style        : 'compressed',
-                    cacheLocation: 'css/.sass-cache',
+                    cacheLocation: 'css/.sass-cache'
                 },
                 files  : {
                     'css/style.css': 'css/style.scss'
@@ -15,13 +15,22 @@ module.exports = function (grunt)
             }
         },
 
-        emberTemplates: {
-            compile: {
+        ngtemplates: {
+            app: {
+                src    : [ 'app/**/*.htm' ],
+                dest   : 'dist/templates.js',
                 options: {
-                    templateBasePath: /js\/app\/templates\//
-                },
-                files  : {
-                    'js/dist/templates.js': 'js/app/templates/**/*.hbs'
+                    prefix : '/',
+                    htmlmin: {
+                        collapseBooleanAttributes    : true,
+                        collapseWhitespace           : true,
+                        removeAttributeQuotes        : true,
+                        removeComments               : true,
+                        removeEmptyAttributes        : true,
+                        removeRedundantAttributes    : true,
+                        removeScriptTypeAttributes   : true,
+                        removeStyleLinkTypeAttributes: true
+                    }
                 }
             }
         },
@@ -29,40 +38,37 @@ module.exports = function (grunt)
         concat: {
             libs: {
                 src : [
+                    'js/vendor/angular.min.js',
+                    'js/vendor/angular-resource.min.js',
                     'js/vendor/jquery-2.0.3.js',
-                    'js/vendor/handlebars-1.0.0.js',
-                    'js/vendor/ember-1.1.2.js',
-                    'js/vendor/ember-data-1.0.0.js',
-                    'js/vendor/ember-localadapter.js',
                     'js/vendor/moment.js',
-//                    'js/vendor/createUsersInLocalStorage.js',
                 ],
-                dest: 'js/dist/vendor.js'
+                dest: 'dist/vendor.js'
             },
             app : {
-                src : 'js/app/**/*.js',
-                dest: 'js/dist/app.js'
+                src : 'app/**/*.js',
+                dest: 'dist/app.js'
             }
         },
 
         uglify: {
             libs: {
                 files: {
-                    'js/app.min.js': ['js/dist/vendor.js', 'js/dist/templates.js', 'js/dist/app.js']
+                    'js/app.min.js': ['dist/vendor.js', 'dist/templates.js', 'dist/app.js']
                 }
             }
         },
 
         watch: {
-            emberTemplates: {
-                files: 'js/app/templates/**/*.hbs',
-                tasks: ['emberTemplates']
-            },
-            concat        : {
-                files: ['js/**/*.js', '!js/vendor/**/*.js', '!js/dist/*.js'],
+            concat     : {
+                files: ['app/**/*.js'],
                 tasks: ['concat']
             },
-            sass          : {
+            ngtemplates: {
+                files: ['app/**/*.htm'],
+                tasks: ['ngtemplates']
+            },
+            sass       : {
                 files: ['css/*.scss'],
                 tasks: ['sass']
             }
@@ -73,7 +79,7 @@ module.exports = function (grunt)
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-ember-templates');
-    grunt.registerTask('default', ['concat', 'emberTemplates']);
+    grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.registerTask('default', ['ngtemplates', 'concat', 'sass']);
     grunt.registerTask('build', ['default', 'uglify']);
 };
