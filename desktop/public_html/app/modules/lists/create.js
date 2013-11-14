@@ -1,18 +1,33 @@
-var ListsCreateController = function ($scope, $state, List)
+var ListsCreateController = function ($scope, $state, List, lists)
 {
     angular.extend($scope, {
-        model : {
-            name: 'test list'
+        loading: false,
+        model  : {
+            name: null
         },
-        save  : function ()
+        save   : function ()
         {
-            console.log('save');
+            var self = this,
+                list = new List(this.model);
+
+            self.loading = true;
+
+            list.$save(function ()
+            {
+                $scope.model = {};
+
+                lists.push(list);
+
+                self.loading = false;
+
+                $state.transitionTo('home.lists');
+            });
         },
-        cancel: function ()
+        cancel : function ()
         {
             $state.transitionTo('home.lists');
         }
     });
 };
 
-angular.module('app').controller('ListsCreateController', ['$scope', '$state', 'List', ListsCreateController]);
+angular.module('app').controller('ListsCreateController', ['$scope', '$state', 'List', 'lists', ListsCreateController]);

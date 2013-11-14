@@ -7,10 +7,7 @@ abstract class AbstractApiController extends AbstractController
 
 	public function actionIndex()
 	{
-//		$trip = Trip::getFromID(1);
-//
-//		var_dump($trip->tripItems());exit;
-
+//		sleep(5);
 		$result = NULL;
 		$model  = $this->getModel();
 		$class  = $this->getClassName($model);

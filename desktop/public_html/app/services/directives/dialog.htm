@@ -1,2 +1,9 @@
-<button class='action-cancel left' type='reset' data-ng-click='cancelAction()'>Cancel</button>
-<button class='right' type='submit' data-ng-class='saveClass' data-ng-bind='saveText' data-ng-click='saveAction()'></button>
+<button class='action-cancel left' type='reset'
+		data-ng-click='cancelAction()'
+		data-ng-disabled='loading'>Cancel</button>
+
+<button class='right' type='submit'
+		data-ng-class='saveClass'
+		data-ng-bind='saveText'
+		data-ng-click='saveAction()'
+		data-ng-disabled='loading'></button>

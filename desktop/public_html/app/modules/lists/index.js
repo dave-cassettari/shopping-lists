@@ -1,12 +1,9 @@
-var ListsIndexController = function ($scope, List)
+var ListsIndexController = function ($scope, lists)
 {
     angular.extend($scope, {
-        loading: true,
-        lists  : List.query(function ()
-        {
-            $scope.loading = false;
-        })
+        loading: false,
+        lists  : lists
     });
 };
 
-angular.module('app').controller('ListsIndexController', ['$scope', 'List', ListsIndexController]);
+angular.module('app').controller('ListsIndexController', ['$scope', 'lists', ListsIndexController]);

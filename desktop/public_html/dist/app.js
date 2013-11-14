@@ -21,15 +21,16 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             controller : 'IndexController',
             templateUrl: '/app/modules/index.htm'
         })
-//        .state('home.lists', {
-//            abstract: true,
-//            url     : 'lists',
-//            template: '<div data-ui-view />'
-//        })
         .state('home.lists', {
             url        : 'lists',
             controller : 'ListsIndexController',
-            templateUrl: '/app/modules/lists/index.htm'
+            templateUrl: '/app/modules/lists/index.htm',
+            resolve    : {
+                lists: function ($stateParams, List)
+                {
+                    return List.query();
+                }
+            }
         })
         .state('home.lists.create', {
             url        : '/create',
@@ -84,36 +85,48 @@ var IndexController = function ($scope)
 };
 
 angular.module('app').controller('IndexController', ['$scope', IndexController]);
-var ListsCreateController = function ($scope, $state, List)
+var ListsCreateController = function ($scope, $state, List, lists)
 {
     angular.extend($scope, {
-        model : {
-            name: 'test list'
+        loading: false,
+        model  : {
+            name: null
         },
-        save  : function ()
+        save   : function ()
         {
-            console.log('save');
+            var self = this,
+                list = new List(this.model);
+
+            self.loading = true;
+
+            list.$save(function ()
+            {
+                $scope.model = {};
+
+                lists.push(list);
+
+                self.loading = false;
+
+                $state.transitionTo('home.lists');
+            });
         },
-        cancel: function ()
+        cancel : function ()
         {
             $state.transitionTo('home.lists');
         }
     });
 };
 
-angular.module('app').controller('ListsCreateController', ['$scope', '$state', 'List', ListsCreateController]);
-var ListsIndexController = function ($scope, List)
+angular.module('app').controller('ListsCreateController', ['$scope', '$state', 'List', 'lists', ListsCreateController]);
+var ListsIndexController = function ($scope, lists)
 {
     angular.extend($scope, {
-        loading: true,
-        lists  : List.query(function ()
-        {
-            $scope.loading = false;
-        })
+        loading: false,
+        lists  : lists
     });
 };
 
-angular.module('app').controller('ListsIndexController', ['$scope', 'List', ListsIndexController]);
+angular.module('app').controller('ListsIndexController', ['$scope', 'lists', ListsIndexController]);
 var ListsViewController = function ($scope, list, items)
 {
     console.log(items);
@@ -132,13 +145,14 @@ angular.module('app').controller('ListsViewController', ['$scope', 'list', 'item
 angular.module('app.directives').directive('appDialog', function ()
 {
     return {
-        restrict: 'A',
         scope      : {
+            loading     : '=',
             saveText    : '@',
             saveClass   : '@',
             saveAction  : '&',
             cancelAction: '&'
         },
+        restrict   : 'A',
         templateUrl: '/app/services/directives/dialog.htm'
     }
 });
@@ -151,7 +165,18 @@ angular.module('app.directives').directive('appModal', function ()
         restrict   : 'A',
         replace    : true,
         transclude : true,
-        templateUrl: '/app/services/directives/modal.htm'
+        templateUrl: '/app/services/directives/modal.htm',
+        link       : function ($scope, element)
+        {
+            var $window = $(element).find('.modal');
+
+            $window.css('height', 'auto');
+            $window.css('margin-top', -$window.height() / 2);
+            $window.click(function (event)
+            {
+                event.stopPropagation();
+            });
+        }
     }
 });
 angular.module('app.resources').factory('Item', ['$resource', function ($resource)

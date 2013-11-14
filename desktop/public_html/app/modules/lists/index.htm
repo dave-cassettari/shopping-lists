@@ -1,13 +1,19 @@
-<ui-view></ui-view>
+<div class='content col-2'>
+	<div class='content-header'>
+		<div class='button-group right'>
+			<a href='/lists/create' class='button action-create'>Create New List</a>
+		</div>
 
-<div class='button-group right'>
-	<a href='/lists/create' class='button action-create'>Create New List</a>
+		<h2><span class='total' data-ng-bind='lists.length'></span> Lists</h2>
+	</div>
+
+	<ul class='items content-scrollable' data-ng-class="{ 'is-loading' : loading }">
+		<li data-ng-repeat='list in lists'>
+			<a href='/lists/{{list.id}}' class='item-title' data-ng-bind='list.name'></a>
+		</li>
+	</ul>
 </div>
 
-<h2><span class='total' data-ng-bind='lists.length'></span> Lists</h2>
-
-<ul class='items' data-ng-class="{ 'is-loading' : loading }">
-	<li data-ng-repeat='list in lists'>
-		<a href='/lists/{{list.id}}' class='item-title' data-ng-bind='list.name'></a>
-	</li>
-</ul>
+<div class='content col-2' data-ui-view>
+	<p>Choose a List to play with</p>
+</div>

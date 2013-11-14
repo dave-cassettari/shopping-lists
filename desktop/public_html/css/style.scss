@@ -16,6 +16,38 @@
   }
 }
 
+@mixin scrolling($y: scroll, $x: hidden) {
+  overflow-x: $x;
+  overflow-y: $y;
+
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar
+  {
+	width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb
+  {
+	background-color: rgba(#999, 0.25);
+
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+
+	&:hover,
+	&:active
+	{
+	  background-color: rgba(#999, 0.75);
+	}
+  }
+
+  &::-webkit-scrollbar-button:start:decrement,
+  &::-webkit-scrollbar-button:end:increment
+  {
+	display: none;
+  }
+}
+
 @mixin ellipsis() {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -278,33 +310,68 @@ button
   }
 }
 
-.content
+.content-wrapper
 {
   border: 1px solid #ddd;
   background: $background-standard;
   box-shadow: 0 0 0.25em #ccc;
-
-  overflow: hidden;
 
   position: fixed;
   top: $content-margin;
   left: $sidebar-width;
   right: $content-margin;
   bottom: $content-margin;
+}
 
-  section
+.content
+{
+  $content-header-height: 78px;
+
+  height: 100%;
+
+  float: left;
+
+  position: relative;
+
+  &.col-2
   {
-	width: 50%;
-	height: 100%;
+	width: (100% / 2);
+  }
 
-	background: $background-standard;
+  &.col-3
+  {
+	width: (100% / 3);
+  }
+
+  &.col-2,
+  &.col-3
+  {
 	box-shadow: 0 0 0.5em #ccc;
 
 	z-index: 2000;
 
-	float: right;
+	&:first-child
+	{
+	  box-shadow: none;
 
-	position: relative;
+	  z-index: 0;
+	}
+  }
+
+  .content-header
+  {
+	height: $content-header-height;
+  }
+
+  .content-scrollable
+  {
+	position: absolute;
+	top: $content-header-height;
+	left: 0;
+	right: 0;
+	bottom: 0;
+
+	@include scrolling(auto, hidden);
   }
 
   p
@@ -315,8 +382,6 @@ button
 
 .items
 {
-  margin: 1em 0;
-
   border-top: 1px solid #ddd;
 
   &.is-loading

@@ -21,15 +21,16 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
             controller : 'IndexController',
             templateUrl: '/app/modules/index.htm'
         })
-//        .state('home.lists', {
-//            abstract: true,
-//            url     : 'lists',
-//            template: '<div data-ui-view />'
-//        })
         .state('home.lists', {
             url        : 'lists',
             controller : 'ListsIndexController',
-            templateUrl: '/app/modules/lists/index.htm'
+            templateUrl: '/app/modules/lists/index.htm',
+            resolve    : {
+                lists: function ($stateParams, List)
+                {
+                    return List.query();
+                }
+            }
         })
         .state('home.lists.create', {
             url        : '/create',
