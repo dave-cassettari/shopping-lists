@@ -1,0 +1,14 @@
+<form class='edit' data-ng-submit='save' data-app-modal data-cancel-action='cancel()'>
+	<label>
+		<span class='title'>Name</span>
+
+		<span class='input-container'>
+			<input data-ng-model='model.name' autofocus='autofocus'/>
+		</span>
+
+		<span class='error' data-ng-show='model.errors' data-ng-bind='model.errors'></span>
+	</label>
+
+	<div class='button-group' data-app-dialog data-save-text='Save Stuff' data-save-class='action-save'
+		 data-save-action='save()' data-cancel-action='cancel()'></div>
+</form>

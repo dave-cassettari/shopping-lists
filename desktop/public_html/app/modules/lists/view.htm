@@ -1,0 +1,29 @@
+<section>
+	<div class='button-group right'>
+		<a href='/list/{{list.id}}/create' class='button action-create'>Add Item</a>
+	</div>
+
+	<h3>
+		<span class='total' data-ng-bind='items.length'></span>
+		<span class='title' data-ng-bind='list.name'></span>
+	</h3>
+
+	<ul class='items'>
+		<li data-ng-repeat='item in items'>
+                <span class='list-wrapper'>
+                    <span class='button-group'>
+                        <a href='/list/{{list.id}}/{{item.id}}/edit' class='action-edit'>Edit</a>
+                        <a href='/list/{{list.id}}/{{item.id}}/delete' class='action-delete'>Delete</a>
+                    </span>
+
+                    <span class='item-quantity' data-ng-bind='item.amount'></span>
+                    <span class='item-title' data-ng-bind='item.name'></span>
+                </span>
+		</li>
+		<li class='empty' data-ng-show='items.length == 0'>
+			No Items
+		</li>
+	</ul>
+
+	<div data-ui-view></div>
+</section>

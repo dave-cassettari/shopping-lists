@@ -38,8 +38,9 @@ module.exports = function (grunt)
         concat: {
             libs: {
                 src : [
-                    'js/vendor/angular.min.js',
-                    'js/vendor/angular-resource.min.js',
+                    'js/vendor/angular.js',
+                    'js/vendor/angular-resource.js',
+                    'js/vendor/angular-ui-router.min.js',
                     'js/vendor/jquery-2.0.3.js',
                     'js/vendor/moment.js',
                 ],

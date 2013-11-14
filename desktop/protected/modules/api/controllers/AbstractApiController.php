@@ -171,11 +171,6 @@ abstract class AbstractApiController extends AbstractController
 
 		$criteria->mergeWith($this->getCriteriaFromParams($params));
 
-//		foreach ($params as $name => $value)
-//		{
-//			$criteria->addCondition()
-//		}
-
 		$criteria->offset = $offset;
 
 		$total = $model->count($criteria);

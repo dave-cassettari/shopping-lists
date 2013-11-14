@@ -82,11 +82,15 @@ return array(
 		'urlManager'   => array(
 			'urlFormat'      => 'path',
 			'rules'          => array(
-				''                   => 'application/ember',
-				'angular'            => 'application/angular',
-				'login'              => 'site/login',
-				'logout'             => 'site/logout',
-				'api/<_model>/<_id>' => 'api/<_model>/index/id/<_id>',
+				''                     => 'application/angular',
+				'ember'                => 'application/ember',
+				'login'                => 'site/login',
+				'logout'               => 'site/logout',
+				'api/<_model>'         => 'api/<_model>/index/',
+				'api/<_model>/<_id>/*' => 'api/<_model>/index/id/<_id>',
+				'api/<_model>/*'       => 'api/<_model>/index/',
+				'api/*'                => 'api/',
+				'(.*)'                 => 'application/angular',
 			),
 			'caseSensitive'  => FALSE,
 			'showScriptName' => FALSE

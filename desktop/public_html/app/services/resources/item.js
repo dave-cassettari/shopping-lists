@@ -1,6 +1,6 @@
 angular.module('app.resources').factory('Item', ['$resource', function ($resource)
 {
-    return $resource('Item', '/api/items/:id',
+    return $resource('/api/items/:id',
         {
             id: '@id'
         });

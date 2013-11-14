@@ -319,6 +319,13 @@ button
 
   border-top: 1px solid #ddd;
 
+  &.is-loading
+  {
+	height: 10em;
+
+	background: url('/images/loading.gif') center center no-repeat;
+  }
+
   li
   {
 	border-bottom: 1px solid #ddd;
@@ -474,6 +481,12 @@ button
 
 form
 {
+  .button-group
+  {
+	@include clear-fix();
+
+	padding: 0 0.25em;
+  }
 }
 
 label
@@ -573,5 +586,5 @@ input[type="checkbox"]
 button[disabled],
 .button[disabled]
 {
-  background-image: url('/images/loading.gif');
+  background-image: url('/images/loading-form.gif');
 }
