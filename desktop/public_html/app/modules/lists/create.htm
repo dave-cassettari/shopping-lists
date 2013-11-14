@@ -1,13 +1,9 @@
 <div data-modal data-modal-cancel-action='cancel()'>
 	<form class='edit' data-ng-submit='save'>
-		<label>
-			<span class='title'>Name</span>
-
-		<span class='input-container'>
-			<input data-ng-model='model.name' autofocus='autofocus'/>
-		</span>
-
-			<span class='error' data-ng-show='model.errors' data-ng-bind='model.errors'></span>
+		<label data-label
+			   data-label-title='Name'
+			   data-label-errors='model.errors.name'>
+			<input data-ng-model='model.name' data-ng-focus='true'/>
 		</label>
 
 		<div class='button-group'

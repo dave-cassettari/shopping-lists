@@ -47,13 +47,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
                 lists: function ($stateParams, List)
                 {
                     return List.query().$promise;
+                },
+                units: function ($stateParams, Unit)
+                {
+                    return Unit.query().$promise;
                 }
             }
-        })
-        .state('lists.create', {
-            url        : '/create',
-            controller : 'ListsCreateController',
-            templateUrl: '/app/modules/lists/create.htm'
         })
         .state('lists.list', {
             resolve    : {
@@ -68,9 +67,14 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
                     }).$promise;
                 }
             },
-            url        : '/:list_id',
+            url        : '/{list_id:[0-9]{1,}}',
             controller : 'ListIndexController',
             templateUrl: '/app/modules/lists/list/index.htm'
+        })
+        .state('lists.create', {
+            url        : '/create',
+            controller : 'ListsCreateController',
+            templateUrl: '/app/modules/lists/create.htm'
         })
         .state('lists.list.add', {
             url        : '/add',
@@ -100,12 +104,32 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         });
 }]);
 
-//app.run(['$rootScope', function ($rootScope)
-//{
-//    $rootScope.$on('$stateNotFound', function (event, unfoundState, fromState, fromParams)
-//    {
-//        console.log(unfoundState.to);
-//        console.log(unfoundState.toParams);
-//        console.log(unfoundState.options);
-//    });
-//}]);
+app.run(function ($rootScope)
+{
+    $rootScope.$on('$stateChangeStart',
+        function (event, toState, toParams, fromState, fromParams)
+        {
+//            console.log('Going To: ' + toState.name);
+        });
+
+    $rootScope.$on('$stateNotFound',
+        function (event, unfoundState, fromState, fromParams)
+        {
+            console.log('NOT FOUND');
+            console.log(unfoundState);
+        });
+
+    $rootScope.$on('$stateChangeError',
+        function (event, toState, toParams, fromState, fromParams, error)
+        {
+            console.log('ERROR');
+            console.log(error);
+            console.log(toState.name);
+        });
+
+    $rootScope.$on('$stateChangeSuccess',
+        function (event, toState, toParams, fromState, fromParams)
+        {
+//            console.log('Success: ' + toState.name);
+        });
+});

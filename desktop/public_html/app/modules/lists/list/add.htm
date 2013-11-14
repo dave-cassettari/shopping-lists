@@ -1,13 +1,22 @@
 <div data-modal data-modal-cancel-action='cancel()'>
 	<form class='edit' data-ng-submit='save'>
-		<label>
-			<span class='title'>Name</span>
+		<label data-label
+			   data-label-title='Name'
+			   data-label-errors='model.errors.name'>
+			<input data-ng-model='model.name' data-ng-focus='true'/>
+		</label>
 
-		<span class='input-container'>
-			<input data-ng-model='model.name' autofocus='autofocus'/>
-		</span>
+		<label data-label
+			   data-label-title='Quantity'
+			   data-label-errors='model.errors.quantity'>
+			<input data-ng-model='model.quantity'/>
+		</label>
 
-			<span class='error' data-ng-show='model.errors' data-ng-bind='model.errors'></span>
+		<label data-label
+			   data-label-title='Unit'
+			   data-label-errors='model.errors.unit_id'>
+			<select data-ng-model='model.unit_id'
+					data-ng-options='unit.id as unit.name group by unit.group for unit in units'></select>
 		</label>
 
 		<div class='button-group'

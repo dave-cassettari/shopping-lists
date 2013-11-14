@@ -9,7 +9,7 @@
 
 	<ul class='items content-scrollable' data-ng-class="{ 'is-loading' : loading }">
 		<li data-ng-repeat='list in lists'>
-			<a class='item-title' data-ui-sref='lists.list.index({ list_id: list.id })' data-ng-bind='list.name'></a>
+			<a class='item-title' data-ui-sref='lists.list({ list_id: list.id })' data-ng-bind='list.name'></a>
 		</li>
 	</ul>
 </div>

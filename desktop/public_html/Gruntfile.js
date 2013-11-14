@@ -52,6 +52,24 @@ module.exports = function (grunt)
             }
         },
 
+        pngmin: {
+            app: {
+                options: {
+                    ext  : '.png',
+                    iebug: true,
+                    force: true
+                },
+                files  : [
+                    {
+                        expand: true,
+                        cwd   : 'images/',
+                        src   : ['**/*.{png,jpg,gif}'],
+                        dest  : 'images.min/'
+                    }
+                ]
+            }
+        },
+
         uglify: {
             libs: {
                 files: {
@@ -72,15 +90,21 @@ module.exports = function (grunt)
             sass       : {
                 files: ['css/*.scss'],
                 tasks: ['sass']
+            },
+            pngmin     : {
+                files: ['images/**/*.png'],
+                tasks: ['pngmin']
             }
         }
     });
 
+    grunt.loadNpmTasks('grunt-pngmin');
     grunt.loadNpmTasks('grunt-contrib-sass');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-angular-templates');
-    grunt.registerTask('default', ['ngtemplates', 'concat', 'sass']);
+
+    grunt.registerTask('default', ['ngtemplates', 'concat', 'sass', 'pngmin']);
     grunt.registerTask('build', ['default', 'uglify']);
 };

@@ -1,5 +1,6 @@
 var ListIndexController = function ($scope, list, items)
 {
+
     angular.extend($scope, {
         list : list,
         items: items,

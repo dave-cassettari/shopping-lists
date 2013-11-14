@@ -47,13 +47,12 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
                 lists: function ($stateParams, List)
                 {
                     return List.query().$promise;
+                },
+                units: function ($stateParams, Unit)
+                {
+                    return Unit.query().$promise;
                 }
             }
-        })
-        .state('lists.create', {
-            url        : '/create',
-            controller : 'ListsCreateController',
-            templateUrl: '/app/modules/lists/create.htm'
         })
         .state('lists.list', {
             resolve    : {
@@ -68,9 +67,14 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
                     }).$promise;
                 }
             },
-            url        : '/:list_id',
+            url        : '/{list_id:[0-9]{1,}}',
             controller : 'ListIndexController',
             templateUrl: '/app/modules/lists/list/index.htm'
+        })
+        .state('lists.create', {
+            url        : '/create',
+            controller : 'ListsCreateController',
+            templateUrl: '/app/modules/lists/create.htm'
         })
         .state('lists.list.add', {
             url        : '/add',
@@ -100,15 +104,35 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
         });
 }]);
 
-//app.run(['$rootScope', function ($rootScope)
-//{
-//    $rootScope.$on('$stateNotFound', function (event, unfoundState, fromState, fromParams)
-//    {
-//        console.log(unfoundState.to);
-//        console.log(unfoundState.toParams);
-//        console.log(unfoundState.options);
-//    });
-//}]);
+app.run(function ($rootScope)
+{
+    $rootScope.$on('$stateChangeStart',
+        function (event, toState, toParams, fromState, fromParams)
+        {
+//            console.log('Going To: ' + toState.name);
+        });
+
+    $rootScope.$on('$stateNotFound',
+        function (event, unfoundState, fromState, fromParams)
+        {
+            console.log('NOT FOUND');
+            console.log(unfoundState);
+        });
+
+    $rootScope.$on('$stateChangeError',
+        function (event, toState, toParams, fromState, fromParams, error)
+        {
+            console.log('ERROR');
+            console.log(error);
+            console.log(toState.name);
+        });
+
+    $rootScope.$on('$stateChangeSuccess',
+        function (event, toState, toParams, fromState, fromParams)
+        {
+//            console.log('Success: ' + toState.name);
+        });
+});
 var IndexController = function ($scope)
 {
     angular.extend($scope, {
@@ -159,11 +183,14 @@ var ListsIndexController = function ($scope, lists)
 };
 
 angular.module('app').controller('ListsIndexController', ['$scope', 'lists', ListsIndexController]);
-var ListsAddController = function ($scope, $state, Item, list, items)
+var ListsAddController = function ($scope, $state, Item, list, items, units)
 {
     angular.extend($scope, {
+        units  : units,
         loading: false,
-        model  : new Item(),
+        model  : new Item({
+            list_id: list.id
+        }),
         save   : function ()
         {
             var self = this;
@@ -176,7 +203,7 @@ var ListsAddController = function ($scope, $state, Item, list, items)
 
                 self.loading = false;
 
-                $state.transitionTo('lists.list', { list_id: self.model.id });
+                $state.transitionTo('lists.list', { list_id: list.id });
             }, function (response)
             {
                 response.config.data.errors = response.data.errors;
@@ -191,9 +218,10 @@ var ListsAddController = function ($scope, $state, Item, list, items)
     });
 };
 
-angular.module('app').controller('ListsAddController', ['$scope', '$state', 'Item', 'list', 'items', ListsAddController]);
+angular.module('app').controller('ListsAddController', ['$scope', '$state', 'Item', 'list', 'items', 'units', ListsAddController]);
 var ListIndexController = function ($scope, list, items)
 {
+
     angular.extend($scope, {
         list : list,
         items: items,
@@ -247,6 +275,19 @@ angular.module('app.directives').directive('inline', function ()
         templateUrl: '/app/services/directives/inline.htm'
     }
 });
+angular.module('app.directives').directive('label', function ()
+{
+    return {
+        scope      : {
+            labelTitle : '@',
+            labelErrors: '='
+        },
+        restrict   : 'A',
+        replace    : true,
+        transclude : true,
+        templateUrl: '/app/services/directives/label.htm'
+    }
+});
 angular.module('app.directives').directive('modal', function ()
 {
     return {
@@ -276,10 +317,34 @@ angular.module('app.resources').factory('Item', ['$resource', function ($resourc
         {
             id: '@id'
         });
+
+//    Item.prototype.unit = null;
+//
+////    $scope.$watch()
+////
+////    Item.prototype.amount = function ()
+////    {
+//////        var unit_id = this.unit_id,
+//////            amount = this.amount,
+//////            unit = Unit.get(unit_id);
+//////
+//////
+//////        console.log(unit);
+////
+////    };
+//
+//    return Item;
 }]);
 angular.module('app.resources').factory('List', ['$resource', function ($resource)
 {
     return $resource('/api/lists/:id',
+        {
+            id: '@id'
+        });
+}]);
+angular.module('app.resources').factory('Unit', ['$resource', function ($resource)
+{
+    return $resource('/api/units/:id',
         {
             id: '@id'
         });
