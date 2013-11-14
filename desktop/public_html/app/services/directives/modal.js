@@ -1,8 +1,8 @@
-angular.module('app.directives').directive('appModal', function ()
+angular.module('app.directives').directive('modal', function ()
 {
     return {
         scope      : {
-            cancelAction: '&'
+            modalCancelAction: '&'
         },
         restrict   : 'A',
         replace    : true,

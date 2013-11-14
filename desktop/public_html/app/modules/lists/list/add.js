@@ -1,8 +1,8 @@
-var ListsCreateController = function ($scope, $state, List, lists)
+var ListsAddController = function ($scope, $state, Item, list, items)
 {
     angular.extend($scope, {
         loading: false,
-        model  : new List(),
+        model  : new Item(),
         save   : function ()
         {
             var self = this;
@@ -11,7 +11,7 @@ var ListsCreateController = function ($scope, $state, List, lists)
 
             self.model.$save(function ()
             {
-                lists.push(self.model);
+                items.push(self.model);
 
                 self.loading = false;
 
@@ -25,9 +25,9 @@ var ListsCreateController = function ($scope, $state, List, lists)
         },
         cancel : function ()
         {
-            $state.transitionTo('lists');
+            $state.transitionTo('lists.list', { list_id: list.id });
         }
     });
 };
 
-angular.module('app').controller('ListsCreateController', ['$scope', '$state', 'List', 'lists', ListsCreateController]);
+angular.module('app').controller('ListsAddController', ['$scope', '$state', 'Item', 'list', 'items', ListsAddController]);

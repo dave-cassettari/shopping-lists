@@ -1,0 +1,10 @@
+<span class='title editable'
+	  data-ng-bind='inlineModel'
+	  data-ng-show='!inlineEdit'
+	  data-ng-click='inlineEdit = true'></span>
+
+<input class='inline'
+	   data-ng-model='inlineModel'
+	   data-ng-show='inlineEdit'
+	   data-ng-blur='inlineEdit = false; inlineSave()'
+	   data-app-focus='inlineEdit'/>

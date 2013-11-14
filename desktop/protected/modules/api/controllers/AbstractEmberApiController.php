@@ -2,10 +2,12 @@
 
 abstract class AbstractApiController extends AbstractController
 {
+	const ANGULAR         = TRUE;
 	const DEFAULT_USER_ID = 1;
 
 	public function actionIndex()
 	{
+//		sleep(5);
 		$result = NULL;
 		$model  = $this->getModel();
 		$class  = $this->getClassName($model);
@@ -30,51 +32,53 @@ abstract class AbstractApiController extends AbstractController
 				}
 				break;
 
+			case 'PUT':
+				$params = $this->getRestParams($class);
+				$result = $this->getExistingObject($params);
+
+				if (!$result)
+				{
+					throw new CHttpException(404);
+				}
+
+				$relations = $result->relations();
+
+				foreach ($params as $name => $value)
+				{
+					if ($result->hasAttribute($name))
+					{
+						$result->setAttribute($name, $value);
+					}
+
+					foreach ($relations as $relation => $config)
+					{
+						if ($relation != $name)
+						{
+							continue;
+						}
+
+						$type = $config[0];
+
+						switch ($type)
+						{
+							case AbstractActiveRecord::BELONGS_TO:
+								$attribute = $relation . '_id';
+
+								$result->setAttribute($attribute, $value);
+								break;
+						}
+					}
+				}
+
+				if ($result->validate())
+				{
+					$result->save();
+				}
+				break;
+
 			case 'POST':
 				$params = $this->getRestParams($class);
-
-				if (isset($params['id']))
-				{
-					$result = $this->getExistingObject($params);
-
-					if (!$result)
-					{
-						throw new CHttpException(404);
-					}
-
-					$relations = $result->relations();
-
-					foreach ($params as $name => $value)
-					{
-						if ($result->hasAttribute($name))
-						{
-							$result->setAttribute($name, $value);
-						}
-
-						foreach ($relations as $relation => $config)
-						{
-							if ($relation != $name)
-							{
-								continue;
-							}
-
-							$type = $config[0];
-
-							switch ($type)
-							{
-								case AbstractActiveRecord::BELONGS_TO:
-									$attribute = $relation . '_id';
-
-									$result->setAttribute($attribute, $value);
-									break;
-							}
-						}
-					}
-				}
-				else
-				{
-					$result = $this->createAndSaveObject($params);
-				}
+				$result = $this->createAndSaveObject($params);
 
 				if ($result->validate())
 				{
@@ -98,13 +102,25 @@ abstract class AbstractApiController extends AbstractController
 				break;
 		}
 
-		if ($result instanceof AbstractActiveRecord && $result->hasErrors())
+		if (!self::ANGULAR)
 		{
-			http_response_code(422);
+			if (is_object($result))
+			{
+				if ($result instanceof AbstractActiveRecord && $result->hasErrors())
+				{
+					http_response_code(422);
 
-			$result = array(
-				'errors' => $result->getErrors(),
-			);
+					$result = array(
+						'apiErrors' => $result->getErrors(),
+					);
+				}
+				else
+				{
+					$result = array(
+						$this->getClassName($result) => $result
+					);
+				}
+			}
 		}
 
 		echo json_encode($result, JSON_PRETTY_PRINT);
@@ -154,11 +170,21 @@ abstract class AbstractApiController extends AbstractController
 
 		$criteria->offset = $offset;
 
-//		$total = $model->count($criteria);
+		$total = $model->count($criteria);
 
 		$criteria->limit = $limit;
 
-		return $model->findAll($criteria);
+		if (self::ANGULAR)
+		{
+			return $model->findAll($criteria);
+		}
+
+		return array(
+			$plural => $model->findAll($criteria),
+			'meta'  => array(
+				'total' => $total,
+			),
+		);
 	}
 
 	protected function createAndSaveObject($params)

@@ -7,6 +7,23 @@ var app = angular.module('app', ['ui.router', 'app.resources', 'app.directives']
 
 app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider)
 {
+    var findIn = function (array, id, param)
+    {
+        var i, length = array.length;
+
+        param = param || 'id';
+
+        for (i = 0; i < length; i++)
+        {
+            if (array[i][param] == id)
+            {
+                return array[i];
+            }
+        }
+
+        return null;
+    };
+
     $locationProvider.html5Mode(true);
 
 //    $urlRouterProvider
@@ -16,56 +33,71 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
 //        .otherwise('/');
 
     $stateProvider
-        .state('home', {
+        .state('index', {
             url        : '/',
             controller : 'IndexController',
             templateUrl: '/app/modules/index.htm'
         })
-        .state('home.lists', {
+        .state('lists', {
+            parent     : 'index',
             url        : 'lists',
             controller : 'ListsIndexController',
             templateUrl: '/app/modules/lists/index.htm',
             resolve    : {
                 lists: function ($stateParams, List)
                 {
-                    return List.query();
+                    return List.query().$promise;
                 }
             }
         })
-        .state('home.lists.create', {
+        .state('lists.create', {
             url        : '/create',
             controller : 'ListsCreateController',
             templateUrl: '/app/modules/lists/create.htm'
         })
-//        .state('home.lists.items', {
-//            abstract: true,
-//            url     : '/:item_id',
-//            template: '<div data-ui-view />'
-//        })
-        .state('home.lists.view', {
+        .state('lists.list', {
             resolve    : {
-                list : function ($stateParams, List)
+                list : function ($stateParams, lists)
                 {
-                    return List.get({
-                        id: $stateParams.list_id
-                    });
+                    return findIn(lists, $stateParams.list_id);
                 },
                 items: function ($stateParams, Item)
                 {
                     return Item.query({
                         list_id: $stateParams.list_id
-                    });
+                    }).$promise;
                 }
             },
             url        : '/:list_id',
-            controller : 'ListsViewController',
-            templateUrl: '/app/modules/lists/view.htm'
+            controller : 'ListIndexController',
+            templateUrl: '/app/modules/lists/list/index.htm'
+        })
+        .state('lists.list.add', {
+            url        : '/add',
+            controller : 'ListsAddController',
+            templateUrl: '/app/modules/lists/list/add.htm'
+        })
+        .state('lists.list.item', {
+            abstract: true,
+            resolve : {
+                item: function ($stateParams, items)
+                {
+                    return findIn(lists, $stateParams.item_id);
+                }
+            },
+            url     : '/:item_id',
+            template: '<div data-ui-view />'
+        })
+        .state('lists.list.item.index', {
+            url        : '',
+            controller : 'ItemIndexController',
+            templateUrl: '/app/modules/lists/list/item/index.htm'
+        })
+        .state('lists.list.item.delete', {
+            url        : '',
+            controller : 'ItemDeleteController',
+            templateUrl: '/app/modules/lists/list/item/delete.htm'
         });
-//        .state('home.lists.items.create', {
-//            url        : '/create',
-//            controller : 'ItemsCreateController',
-//            templateUrl: '/app/modules/lists/items/create.htm'
-//        });
 }]);
 
 //app.run(['$rootScope', function ($rootScope)
@@ -89,30 +121,30 @@ var ListsCreateController = function ($scope, $state, List, lists)
 {
     angular.extend($scope, {
         loading: false,
-        model  : {
-            name: null
-        },
+        model  : new List(),
         save   : function ()
         {
-            var self = this,
-                list = new List(this.model);
+            var self = this;
 
             self.loading = true;
 
-            list.$save(function ()
+            self.model.$save(function ()
             {
-                $scope.model = {};
-
-                lists.push(list);
+                lists.push(self.model);
 
                 self.loading = false;
 
-                $state.transitionTo('home.lists');
+                $state.transitionTo('lists.list', { list_id: self.model.id });
+            }, function (response)
+            {
+                response.config.data.errors = response.data.errors;
+
+                self.loading = false;
             });
         },
         cancel : function ()
         {
-            $state.transitionTo('home.lists');
+            $state.transitionTo('lists');
         }
     });
 };
@@ -127,21 +159,52 @@ var ListsIndexController = function ($scope, lists)
 };
 
 angular.module('app').controller('ListsIndexController', ['$scope', 'lists', ListsIndexController]);
-var ListsViewController = function ($scope, list, items)
+var ListsAddController = function ($scope, $state, Item, list, items)
 {
-    console.log(items);
     angular.extend($scope, {
-        list : list,
-        items: items
-//        loading: true,
-//        lists  : List.query(function ()
-//        {
-//            $scope.loading = false;
-//        })
+        loading: false,
+        model  : new Item(),
+        save   : function ()
+        {
+            var self = this;
+
+            self.loading = true;
+
+            self.model.$save(function ()
+            {
+                items.push(self.model);
+
+                self.loading = false;
+
+                $state.transitionTo('lists.list', { list_id: self.model.id });
+            }, function (response)
+            {
+                response.config.data.errors = response.data.errors;
+
+                self.loading = false;
+            });
+        },
+        cancel : function ()
+        {
+            $state.transitionTo('lists.list', { list_id: list.id });
+        }
     });
 };
 
-angular.module('app').controller('ListsViewController', ['$scope', 'list', 'items', ListsViewController]);
+angular.module('app').controller('ListsAddController', ['$scope', '$state', 'Item', 'list', 'items', ListsAddController]);
+var ListIndexController = function ($scope, list, items)
+{
+    angular.extend($scope, {
+        list : list,
+        items: items,
+        save : function ()
+        {
+            this.list.$save();
+        }
+    });
+};
+
+angular.module('app').controller('ListIndexController', ['$scope', 'list', 'items', ListIndexController]);
 angular.module('app.directives').directive('appDialog', function ()
 {
     return {
@@ -156,11 +219,39 @@ angular.module('app.directives').directive('appDialog', function ()
         templateUrl: '/app/services/directives/dialog.htm'
     }
 });
-angular.module('app.directives').directive('appModal', function ()
+angular.module('app.directives').directive('appFocus', function ()
+{
+    return {
+        restrict: 'A',
+        link    : function ($scope, element, attributes)
+        {
+            $scope.$watch(attributes.appFocus, function (value)
+            {
+                if (value)
+                {
+                    element[0].focus();
+                }
+            });
+        }
+    }
+});
+angular.module('app.directives').directive('inline', function ()
 {
     return {
         scope      : {
-            cancelAction: '&'
+            inlineEdit : '@',
+            inlineModel: '=',
+            inlineSave : '&'
+        },
+        restrict   : 'A',
+        templateUrl: '/app/services/directives/inline.htm'
+    }
+});
+angular.module('app.directives').directive('modal', function ()
+{
+    return {
+        scope      : {
+            modalCancelAction: '&'
         },
         restrict   : 'A',
         replace    : true,

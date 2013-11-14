@@ -1,19 +1,19 @@
 <section>
 	<div class='button-group right'>
-		<a href='/list/{{list.id}}/create' class='button action-create'>Add Item</a>
+		<a class='button action-create' data-ui-sref='lists.list.add({ list_id: list.id })'>Add Item</a>
 	</div>
 
 	<h3>
 		<span class='total' data-ng-bind='items.length'></span>
-		<span class='title' data-ng-bind='list.name'></span>
+		<span class='inline' data-inline data-inline-model='list.name' data-inline-save='save()'></span>
 	</h3>
 
 	<ul class='items'>
 		<li data-ng-repeat='item in items'>
                 <span class='list-wrapper'>
                     <span class='button-group'>
-                        <a href='/list/{{list.id}}/{{item.id}}/edit' class='action-edit'>Edit</a>
-                        <a href='/list/{{list.id}}/{{item.id}}/delete' class='action-delete'>Delete</a>
+                        <a class='action-edit' data-ui-sref='lists.list.item.index({ list_id: list.id, item_id: item.id })'>Edit</a>
+                        <a class='action-delete' data-ui-sref='lists.list.item.delete({ list_id: list.id, item_id: item.id })'>Delete</a>
                     </span>
 
                     <span class='item-quantity' data-ng-bind='item.amount'></span>

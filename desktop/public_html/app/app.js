@@ -7,6 +7,23 @@ var app = angular.module('app', ['ui.router', 'app.resources', 'app.directives']
 
 app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider)
 {
+    var findIn = function (array, id, param)
+    {
+        var i, length = array.length;
+
+        param = param || 'id';
+
+        for (i = 0; i < length; i++)
+        {
+            if (array[i][param] == id)
+            {
+                return array[i];
+            }
+        }
+
+        return null;
+    };
+
     $locationProvider.html5Mode(true);
 
 //    $urlRouterProvider
@@ -16,56 +33,71 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
 //        .otherwise('/');
 
     $stateProvider
-        .state('home', {
+        .state('index', {
             url        : '/',
             controller : 'IndexController',
             templateUrl: '/app/modules/index.htm'
         })
-        .state('home.lists', {
+        .state('lists', {
+            parent     : 'index',
             url        : 'lists',
             controller : 'ListsIndexController',
             templateUrl: '/app/modules/lists/index.htm',
             resolve    : {
                 lists: function ($stateParams, List)
                 {
-                    return List.query();
+                    return List.query().$promise;
                 }
             }
         })
-        .state('home.lists.create', {
+        .state('lists.create', {
             url        : '/create',
             controller : 'ListsCreateController',
             templateUrl: '/app/modules/lists/create.htm'
         })
-//        .state('home.lists.items', {
-//            abstract: true,
-//            url     : '/:item_id',
-//            template: '<div data-ui-view />'
-//        })
-        .state('home.lists.view', {
+        .state('lists.list', {
             resolve    : {
-                list : function ($stateParams, List)
+                list : function ($stateParams, lists)
                 {
-                    return List.get({
-                        id: $stateParams.list_id
-                    });
+                    return findIn(lists, $stateParams.list_id);
                 },
                 items: function ($stateParams, Item)
                 {
                     return Item.query({
                         list_id: $stateParams.list_id
-                    });
+                    }).$promise;
                 }
             },
             url        : '/:list_id',
-            controller : 'ListsViewController',
-            templateUrl: '/app/modules/lists/view.htm'
+            controller : 'ListIndexController',
+            templateUrl: '/app/modules/lists/list/index.htm'
+        })
+        .state('lists.list.add', {
+            url        : '/add',
+            controller : 'ListsAddController',
+            templateUrl: '/app/modules/lists/list/add.htm'
+        })
+        .state('lists.list.item', {
+            abstract: true,
+            resolve : {
+                item: function ($stateParams, items)
+                {
+                    return findIn(lists, $stateParams.item_id);
+                }
+            },
+            url     : '/:item_id',
+            template: '<div data-ui-view />'
+        })
+        .state('lists.list.item.index', {
+            url        : '',
+            controller : 'ItemIndexController',
+            templateUrl: '/app/modules/lists/list/item/index.htm'
+        })
+        .state('lists.list.item.delete', {
+            url        : '',
+            controller : 'ItemDeleteController',
+            templateUrl: '/app/modules/lists/list/item/delete.htm'
         });
-//        .state('home.lists.items.create', {
-//            url        : '/create',
-//            controller : 'ItemsCreateController',
-//            templateUrl: '/app/modules/lists/items/create.htm'
-//        });
 }]);
 
 //app.run(['$rootScope', function ($rootScope)
