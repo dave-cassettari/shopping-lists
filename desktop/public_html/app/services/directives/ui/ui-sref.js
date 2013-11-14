@@ -37,7 +37,7 @@ angular.module('app.directives').directive('uiSref', ['$state', function ($state
 
     var includes = function ($state, stateOrName, params)
     {
-        var includes = $state.is(stateOrName);
+        var includes = $state.includes(stateOrName);
 
         angular.forEach(params, function (value, key)
         {
