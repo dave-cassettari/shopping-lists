@@ -96,6 +96,22 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 url        : '',
                 controller : 'ItemDeleteController',
                 templateUrl: '/app/modules/lists/list/item/delete.htm'
+            })
+            .state('trips', {
+                parent     : 'index',
+                url        : 'trips',
+                controller : 'TripsIndexController',
+                templateUrl: '/app/modules/trips/index.htm',
+                resolve    : {
+                    lists: function ($stateParams, List)
+                    {
+                        return List.query().$promise;
+                    },
+                    units: function ($stateParams, Unit)
+                    {
+                        return Unit.query().$promise;
+                    }
+                }
             });
     }]);
 

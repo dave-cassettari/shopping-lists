@@ -96,6 +96,22 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
                 url        : '',
                 controller : 'ItemDeleteController',
                 templateUrl: '/app/modules/lists/list/item/delete.htm'
+            })
+            .state('trips', {
+                parent     : 'index',
+                url        : 'trips',
+                controller : 'TripsIndexController',
+                templateUrl: '/app/modules/trips/index.htm',
+                resolve    : {
+                    lists: function ($stateParams, List)
+                    {
+                        return List.query().$promise;
+                    },
+                    units: function ($stateParams, Unit)
+                    {
+                        return Unit.query().$promise;
+                    }
+                }
             });
     }]);
 
@@ -116,6 +132,75 @@ app.run(function ($rootScope)
             console.log(toState.name);
         });
 });
+var AbstractEditController = function ($scope, $state, model)
+{
+    var original = angular.copy(model);
+
+    angular.extend($scope, {
+        loading       : false,
+        model         : model,
+        completeRoute : function (model)
+        {
+            return 'index'
+        },
+        completeParams: function (model)
+        {
+            return {};
+        },
+        saveRoute     : function (model)
+        {
+            return this.completeRoute(model);
+        },
+        saveParams    : function (model)
+        {
+            return this.completeParams(model);
+        },
+        cancelRoute   : function (model)
+        {
+            return this.completeRoute(model);
+        },
+        cancelParams  : function (model)
+        {
+            return this.completeParams(model);
+        },
+        onSave        : function (model)
+        {
+
+        },
+        onCancel      : function (model)
+        {
+
+        },
+        save          : function ()
+        {
+            var self = this;
+
+            this.loading = true;
+
+            this.model.$save(function ()
+            {
+                self.loading = false;
+
+                self.onSave(self.model);
+
+                $state.transitionTo(self.saveRoute(self.model), self.saveParams(self.model));
+            }, function (response)
+            {
+                response.config.data.errors = response.data.errors;
+
+                self.loading = false;
+            });
+        },
+        cancel        : function ()
+        {
+            angular.extend(this.model, original);
+
+            this.onCancel(this.model);
+
+            $state.transitionTo(this.cancelRoute(this.model), this.cancelParams(this.model));
+        }
+    });
+};
 var IndexController = function ($scope)
 {
     angular.extend($scope, {
@@ -126,32 +211,24 @@ var IndexController = function ($scope)
 angular.module('app').controller('IndexController', ['$scope', IndexController]);
 var ListsCreateController = function ($scope, $state, List, lists)
 {
+    AbstractEditController.call(this, $scope, $state, new List());
+
     angular.extend($scope, {
-        loading: false,
-        model  : new List(),
-        save   : function ()
+        cancelRoute: function ()
         {
-            var self = this;
-
-            self.loading = true;
-
-            self.model.$save(function ()
-            {
-                lists.push(self.model);
-
-                self.loading = false;
-
-                $state.transitionTo('lists.list', { list_id: self.model.id });
-            }, function (response)
-            {
-                response.config.data.errors = response.data.errors;
-
-                self.loading = false;
-            });
+            return 'lists';
         },
-        cancel : function ()
+        saveRoute  : function ()
         {
-            $state.transitionTo('lists');
+            return 'lists.list';
+        },
+        saveParams : function (model)
+        {
+            return { list_id: model.id };
+        },
+        onSave     : function (model)
+        {
+            lists.push(model);
         }
     });
 };
@@ -231,41 +308,32 @@ var ListIndexController = function ($scope, list, items, units)
 angular.module('app').controller('ListIndexController', ['$scope', 'list', 'items', 'units', ListIndexController]);
 var ItemIndexController = function ($scope, $state, list, item, units)
 {
-    var original = angular.copy(item);
+    AbstractEditController.call(this, $scope, $state, item);
 
     angular.extend($scope, {
-        loading: false,
-        list   : list,
-        model  : item,
-        units  : units,
-        save   : function ()
+        list          : list,
+        units         : units,
+        completeRoute : function ()
         {
-            var self = this;
-
-            self.loading = true;
-
-            this.model.$save(function ()
-            {
-                self.loading = false;
-
-                $state.transitionTo('lists.list', { list_id: list.id });
-            }, function (response)
-            {
-                response.config.data.errors = response.data.errors;
-
-                self.loading = false;
-            });
+            return 'lists.list';
         },
-        cancel : function ()
+        completeParams: function ()
         {
-            angular.extend(item, original);
-
-            $state.transitionTo('lists.list', { list_id: list.id });
+            return { list_id: list.id };
         }
     });
 };
 
 angular.module('app').controller('ItemIndexController', ['$scope', '$state', 'list', 'item', 'units', ItemIndexController]);
+var TripsIndexController = function ($scope, lists)
+{
+    angular.extend($scope, {
+        loading: false,
+        lists  : lists
+    });
+};
+
+angular.module('app').controller('TripsIndexController', ['$scope', 'lists', TripsIndexController]);
 angular.module('app.directives').directive('appDialog', function ()
 {
     return {
@@ -344,6 +412,81 @@ angular.module('app.directives').directive('modal', function ()
         }
     }
 });
+angular.module('app.directives').directive('uiSref', ['$state', function ($state)
+{
+    /**
+     * Taken directly from ui-router's uiSref
+     * @param ref
+     * @returns {{state: *, paramExpr: (*|null)}}
+     */
+    var parseStateRef = function (ref)
+    {
+        var parsed = ref.replace(/\n/g, " ").match(/^([^(]+?)\s*(\((.*)\))?$/);
+
+        if (!parsed || parsed.length !== 4)
+        {
+            throw new Error("Invalid state ref '" + ref + "'");
+        }
+
+        return { state: parsed[1], paramExpr: parsed[3] || null };
+    };
+
+    /**
+     * For some reason the current implementation os is() and includes() ignore params
+     */
+    var is = function ($state, stateOrName, params)
+    {
+        var is = $state.is(stateOrName);
+
+        angular.forEach(params, function (value, key)
+        {
+            if (!$state.params.hasOwnProperty(key) || $state.params[key] !== value)
+            {
+                is = false;
+            }
+        });
+
+        return is;
+    };
+
+    var includes = function ($state, stateOrName, params)
+    {
+        var includes = $state.is(stateOrName);
+
+        angular.forEach(params, function (value, key)
+        {
+            if (!$state.params.hasOwnProperty(key) || $state.params[key] !== value)
+            {
+                includes = false;
+            }
+        });
+
+        return includes;
+    };
+
+    return {
+        restrict: 'A',
+        link    : function ($scope, element, attributes)
+        {
+            var $element = $(element),
+                ref = parseStateRef(attributes.uiSref),
+                update = function ()
+                {
+                    var params = $scope.$eval(ref.paramExpr),
+                        active = includes($state, ref.state, params),
+                        current = is($state, ref.state, params);
+
+                    $element
+                        .toggleClass('is-active', active)
+                        .toggleClass('is-current', current);
+                };
+
+            $scope.$on('$stateChangeSuccess', update);
+
+            update();
+        }
+    }
+}]);
 angular.module('app.resources').factory('Item', ['$resource', function ($resource)
 {
     return $resource('/api/items/:id',

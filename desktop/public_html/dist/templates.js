@@ -30,6 +30,11 @@ angular.module('app').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('/app/modules/trips/index.htm',
+    "<div class=\"content col-2\"><div class=content-header><div class=\"button-group right\"><a class=\"button action-create\" data-ui-sref=lists.create>Create New List</a></div><h2><span class=total data-ng-bind=lists.length></span> Lists</h2></div><ul class=\"items content-scrollable\" data-ng-class=\"{ 'is-loading' : loading }\"><li data-ng-repeat=\"list in lists\"><a class=item-title data-ui-sref=\"lists.list({ list_id: list.id })\" data-ng-bind=list.name></a></li></ul></div><div class=\"content col-2\" data-ui-view=\"\"><p>Choose a List to play with</p></div>"
+  );
+
+
   $templateCache.put('/app/services/directives/dialog.htm',
     "<button class=\"action-cancel left\" type=reset data-ng-click=cancelAction() data-ng-disabled=loading>Cancel</button><button class=right type=submit data-ng-class=saveClass data-ng-bind=saveText data-ng-click=saveAction() data-ng-disabled=loading></button>"
   );

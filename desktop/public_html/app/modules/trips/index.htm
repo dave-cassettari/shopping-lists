@@ -1,0 +1,19 @@
+<div class='content col-2'>
+	<div class='content-header'>
+		<div class='button-group right'>
+			<a class='button action-create' data-ui-sref='lists.create'>Create New List</a>
+		</div>
+
+		<h2><span class='total' data-ng-bind='lists.length'></span> Lists</h2>
+	</div>
+
+	<ul class='items content-scrollable' data-ng-class="{ 'is-loading' : loading }">
+		<li data-ng-repeat='list in lists'>
+			<a class='item-title' data-ui-sref='lists.list({ list_id: list.id })' data-ng-bind='list.name'></a>
+		</li>
+	</ul>
+</div>
+
+<div class='content col-2' data-ui-view>
+	<p>Choose a List to play with</p>
+</div>

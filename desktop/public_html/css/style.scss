@@ -299,7 +299,7 @@ button
 	display: block;
 
 	&:hover,
-	&.active
+	&.is-active
 	{
 	  border-color: #ddd;
 	  border-right-color: $background-standard;
@@ -445,7 +445,7 @@ button
 	}
 
 	a.item-title:hover,
-	.item-title.active
+	.item-title.is-active
 	{
 	  background-color: #eee;
 

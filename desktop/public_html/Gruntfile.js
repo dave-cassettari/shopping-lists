@@ -40,7 +40,7 @@ module.exports = function (grunt)
                 src : [
                     'js/vendor/angular.js',
                     'js/vendor/angular-resource.js',
-                    'js/vendor/angular-ui-router.min.js',
+                    'js/vendor/angular-ui-router.js',
                     'js/vendor/jquery-2.0.3.js',
                     'js/vendor/moment.js',
                 ],

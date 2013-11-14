@@ -1,35 +1,17 @@
 var ItemIndexController = function ($scope, $state, list, item, units)
 {
-    var original = angular.copy(item);
+    AbstractEditController.call(this, $scope, $state, item);
 
     angular.extend($scope, {
-        loading: false,
-        list   : list,
-        model  : item,
-        units  : units,
-        save   : function ()
+        list          : list,
+        units         : units,
+        completeRoute : function ()
         {
-            var self = this;
-
-            self.loading = true;
-
-            this.model.$save(function ()
-            {
-                self.loading = false;
-
-                $state.transitionTo('lists.list', { list_id: list.id });
-            }, function (response)
-            {
-                response.config.data.errors = response.data.errors;
-
-                self.loading = false;
-            });
+            return 'lists.list';
         },
-        cancel : function ()
+        completeParams: function ()
         {
-            angular.extend(item, original);
-
-            $state.transitionTo('lists.list', { list_id: list.id });
+            return { list_id: list.id };
         }
     });
 };

@@ -1,31 +1,23 @@
 var ListsCreateController = function ($scope, $state, List, lists)
 {
+    AbstractEditController.call(this, $scope, $state, new List());
+
     angular.extend($scope, {
-        loading: false,
-        model  : new List(),
-        save   : function ()
+        cancelRoute: function ()
         {
-            var self = this;
-
-            self.loading = true;
-
-            self.model.$save(function ()
-            {
-                lists.push(self.model);
-
-                self.loading = false;
-
-                $state.transitionTo('lists.list', { list_id: self.model.id });
-            }, function (response)
-            {
-                response.config.data.errors = response.data.errors;
-
-                self.loading = false;
-            });
+            return 'lists';
         },
-        cancel : function ()
+        saveRoute  : function ()
         {
-            $state.transitionTo('lists');
+            return 'lists.list';
+        },
+        saveParams : function (model)
+        {
+            return { list_id: model.id };
+        },
+        onSave     : function (model)
+        {
+            lists.push(model);
         }
     });
 };
