@@ -18,6 +18,47 @@ app.factory('$relationalResource', ['$resource', '$injector', function ($resourc
         cache[name] = {};
         models[name] = Resource;
 
+        Resource.prototype.toJSON = function()
+        {
+            var key,
+                name,
+                relation,
+                attributes = this;
+
+            for (name in Resource.belongsTo)
+            {
+                if (!Resource.belongsTo.hasOwnProperty(name))
+                {
+                    continue;
+                }
+
+                relation = Resource.belongsTo[name];
+
+                if (angular.isObject(attributes[name]))
+                {
+                    attributes[name] = attributes[name]['id'];
+                }
+            }
+
+            for (name in Resource.hasMany)
+            {
+                if (!Resource.hasMany.hasOwnProperty(name))
+                {
+                    continue;
+                }
+
+                relation = Resource.hasMany[name];
+                key = relation.key;
+
+                if (angular.isObject(attributes[name]))
+                {
+                    attributes[name] = attributes[name]['id'];
+                }
+            }
+
+            return attributes;
+        };
+
         var superGet = Resource.get;
         var superQuery = Resource.query;
 
@@ -262,6 +303,11 @@ var ListsController = function ($scope, List, Item)
                 console.log(newList.items);
 
                 newItem.list = newList;
+
+                newList.$save(function (response)
+                {
+                    console.log(response);
+                });
             });
         })
     });
